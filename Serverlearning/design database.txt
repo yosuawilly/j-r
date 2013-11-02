@@ -1,0 +1,61 @@
+Admin
+1. id_admin
+2. username
+3. password
+
+BAB
+1. id_bab
+2. label_bab
+3. judul_bab
+
+Materi
+1. id_materi
+2. judul
+3. isi_materi
+4. id_bab
+5. semester(1/2)
+6. url
+
+siswa
+1. id_siswa
+2. username
+3. password
+4. nama
+5. jenis_kelamin
+6. alamat
+
+Tugas
+1. id_tugas
+2. judul_tugas
+3. catatan
+
+Soal_tugas
+1. id_soal
+2. isi_soal
+3. id_tugas
+
+
+##In APlikasi
+Katalog
+1. id_katalog
+2. nama
+3. arti
+
+Quiz
+1. id_quiz
+2. soal_quiz
+3. type_quiz (Multiple/Isi)
+4. Jawaban
+
+Jawaban_Quiz
+1. id_jawaban
+2. jawaban
+3. id_quiz
+4. benar(true/false)
+##IN Aplikasi
+
+table_version
+1. id_table_version
+2. nama_table
+3. version
+
