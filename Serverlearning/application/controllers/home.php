@@ -134,6 +134,9 @@ class Home extends CI_Controller{
     public function submitbab() {
         if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
         if($this->input->post('batal')) redirect ('home/bab', 'refresh');
+
+//        $this->form_validation->set_rules('labelbab', 'Label Bab', 'required|max_length[10]');
+//        $this->form_validation->set_rules('judulbab', 'Judul Bab', 'required|max_length[30]');
         
         $id = $this->input->post('id');
         $proses = $this->input->post('proses');
@@ -142,6 +145,7 @@ class Home extends CI_Controller{
         
         switch ($proses) {
             case 'create':
+                //if ($this->form_validation->run() == false) {
                 if(trim($labelbab) == '' || trim($judulbab) == ''){
                     $this->session->set_flashdata('labelbab', $labelbab);
                     $this->session->set_flashdata('judulbab', $judulbab);
@@ -265,6 +269,63 @@ class Home extends CI_Controller{
         $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
 
         $this->load->view('siswa', $this->user_data);
+    }
+
+    public function deletesiswa($id_siswa=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_siswa==NULL) redirect ('home/siswa', 'refresh');
+
+        $result = $this->siswa_model->delete($id_siswa);
+        if($result) redirect ('home/siswa', 'refresh');
+    }
+
+    public function submitsiswa() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($this->input->post('batal')) redirect ('home/siswa', 'refresh');
+
+        $id = $this->input->post('id');
+        $proses = $this->input->post('proses');
+        $id_siswa = $this->input->post('id_siswa');
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $nama = $this->input->post('nama');
+        $jenis_kelamin = $this->input->post('jenis_kelamin');
+        $alamat = $this->input->post('alamat');
+
+        $data = array('id_siswa'=>$id_siswa, 'username'=>$username, 'password'=>$password,
+                      'nama'=>$nama, 'jenis_kelamin'=>$jenis_kelamin, 'alamat'=>$alamat);
+
+        switch ($proses) {
+            case 'create':
+                if(trim($id_siswa)=='' || trim($username)=='' || trim($password)==''
+                        || trim($nama)=='' || trim($jenis_kelamin)=='' || trim($alamat)==''){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createsiswa', 'refresh');
+                } else {
+                    $result = $this->siswa_model->add($data);
+                    if(!$result['error']) redirect ('home/siswa', 'refresh');
+                    else {
+                        $data['error'] = $result['error'];
+                        $this->session->set_flashdata('data', $data);
+                        redirect('home/createsiswa', 'refresh');
+                    }
+                }
+                break;
+            case 'update':
+                if(trim($id_siswa)=='' || trim($username)=='' || trim($password)==''
+                        || trim($nama)=='' || trim($jenis_kelamin)=='' || trim($alamat)==''){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatesiswa/'.$id, 'refresh');
+                } else {
+                    $sukses = $this->siswa_model->update($id, $data);
+                    if($sukses) redirect ('home/siswa', 'refresh');
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public function tugas(){

@@ -36,8 +36,16 @@ class Siswa_model extends CI_Model{
     }
 
     public function add($data) {
+        $result = array();
         $this->db->insert($this->table, $data);
-        return $this->db->insert_id();
+        if($this->db->_error_message()){
+            $result['error'] = $this->db->_error_message();
+            $result['result'] = false;
+        } else {
+            $result['error'] = '';
+            $result['result'] = true;
+        }
+        return $result;
     }
     
     public function update($id_siswa, $data) {

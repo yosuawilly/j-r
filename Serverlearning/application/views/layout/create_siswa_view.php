@@ -55,7 +55,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="vertical-align: top;">
                     <label>Alamat</label>
                 </td>
                 <td>:
