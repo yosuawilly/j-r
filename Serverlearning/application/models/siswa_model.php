@@ -32,7 +32,7 @@ class Siswa_model extends CI_Model{
         $this->db->where($this->id_siswa, $id_siswa);
         $this->db->limit(1);
         $query = $this->db->get($this->table);
-        return ($query->num_rows() > 0) ? $query->row() : false;;
+        return ($query->num_rows() > 0) ? $query->row() : false;
     }
 
     public function add($data) {

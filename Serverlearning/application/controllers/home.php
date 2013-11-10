@@ -26,11 +26,13 @@ class Home extends CI_Controller{
         $this->load->library('form_validation');
         $this->load->library('table');
         $this->load->library('pagination');
+        $this->load->library('mpdf');
         $this->load->helper('url');
         
         $this->load->model('bab_model');
         $this->load->model('materi_model');
         $this->load->model('siswa_model');
+        $this->load->model('tugas_model');
         
         date_default_timezone_set('Asia/Jakarta');
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
@@ -191,11 +193,142 @@ class Home extends CI_Controller{
         $result = $this->materi_model->get();
 
         $this->table->set_template($this->tmpl);
-        $this->table->set_heading('ID Materi', 'Judul', 'Isi Materi', 'Bab', 'Semester');
+        $this->table->set_heading('ID Materi', 'Judul', 'Isi Materi', 'Bab', 'Semester', 'Action');
+        
+        foreach($result['rows'] as $row){
+            $button_update_delete = '<div style="float:right;"><a style="margin-right:5px;" href="'.base_url().'home/updatemateri/'.$row['id_materi'].'" class="btn btn-warning">
+            <i class="icon icon-pencil"></i> Update</a>';
+            $button_update_delete .= '<a href="'.base_url().'home/deletemateri/'.$row['id_materi'].'" class="btn btn-danger" onclick="return deleteData(this,\''.$row['id_materi'].'\');">
+            <i class="icon icon-trash"></i> Delete</a></div>';
+            $this->table->add_row(
+                array('data'=>$row['id_materi'], 'class'=>'center'),
+                array('data'=>$row['judul'], 'class'=>'center'),
+                array('data'=>$row['isi_materi'], 'class'=>'center'),
+                array('data'=>$row['label_bab'], 'class'=>'center'),
+                array('data'=>$row['semester'], 'class'=>'center'),
+                $button_update_delete
+            );
+        }
+        $this->user_data['table'] = $this->table->generate();
         
         $this->load->view('materi', $this->user_data);
     }
     
+    public function createmateri() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+
+        $data_bab = $this->bab_model->get();
+        $data_bab = $data_bab['rows'];
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+        
+        $this->user_data['title'] = "Create Materi - E-Learning Server";
+        $this->user_data['materi'] = true;
+        $this->user_data['id'] = '';
+        $this->user_data['create'] = true;
+        $this->user_data['data_bab'] = $data_bab;
+        $this->user_data['judul'] = (isset($data['judul'])) ? $data['judul'] : '';
+        $this->user_data['isi_materi'] = (isset($data['isi_materi'])) ? $data['isi_materi'] : '';
+        $this->user_data['id_bab'] = (isset($data['id_bab'])) ? $data['id_bab'] : '';
+        $this->user_data['semester'] = (isset($data['semester'])) ? $data['semester'] : '';
+        
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+        
+        $this->load->view('materi', $this->user_data);
+    }
+
+    public function updatemateri($id_materi=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_materi==NULL) redirect ('home/materi', 'refresh');
+
+        $row = $this->materi_model->get_by_id($id_materi);
+        if(!$row) redirect ('home/materi', 'refresh');
+
+        $data_bab = $this->bab_model->get();
+        $data_bab = $data_bab['rows'];
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+
+        $this->user_data['title'] = "Update Materi - E-Learning Server";
+        $this->user_data['materi'] = true;
+        $this->user_data['id'] = $id_materi;
+        $this->user_data['update'] = true;
+        $this->user_data['data_bab'] = $data_bab;
+        $this->user_data['judul'] = (isset($data['judul'])) ? $data['judul'] : $row->judul;
+        $this->user_data['isi_materi'] = (isset($data['isi_materi'])) ? $data['isi_materi'] : $row->isi_materi;
+        $this->user_data['id_bab'] = (isset($data['id_bab'])) ? $data['id_bab'] : $row->id_bab;
+        $this->user_data['semester'] = (isset($data['semester'])) ? $data['semester'] : $row->semester;
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+
+        $this->load->view('materi', $this->user_data);
+    }
+
+    public function deletemateri($id_materi=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_materi==NULL) redirect ('home/materi', 'refresh');
+
+        $result = $this->materi_model->delete($id_materi);
+        if($result['result']) {
+            unlink('materi/'.$result['judul'].'.pdf');
+            redirect ('home/materi', 'refresh');
+        }
+    }
+
+    public function submitmateri() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($this->input->post('batal')) redirect ('home/materi', 'refresh');
+
+        $id = $this->input->post('id');
+        $proses = $this->input->post('proses');
+        $judul = $this->input->post('judul');
+        $isi_materi = $this->input->post('isi_materi');
+        $id_bab = $this->input->post('id_bab');
+        $semester = $this->input->post('semester');
+
+        $data = array('judul'=>$judul, 'isi_materi'=>$isi_materi, 'id_bab'=>$id_bab,
+                      'semester'=>$semester);
+
+        switch ($proses) {
+            case 'create':
+                if(trim($judul)=='' || trim($isi_materi)=='' || trim($id_bab)==''
+                        || trim($semester)==''){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createmateri', 'refresh');
+                } else {
+                    $result = $this->materi_model->add($data);
+                    if(!$result['error']) {
+                        $this->mpdf->WriteHTML($isi_materi);
+                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
+                        redirect ('home/materi', 'refresh');
+                    }
+                    else {
+                        $data['error'] = $result['error'];
+                        $this->session->set_flashdata('data', $data);
+                        redirect('home/createmateri', 'refresh');
+                    }
+                }
+                break;
+            case 'update':
+                if(trim($judul)=='' || trim($isi_materi)=='' || trim($id_bab)==''
+                        || trim($semester)==''){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatemateri/'.$id, 'refresh');
+                } else {
+                    $sukses = $this->materi_model->update($id, $data);
+                    if($sukses) {
+                        $this->mpdf->WriteHTML($isi_materi);
+                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
+                        redirect ('home/materi', 'refresh');
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     public function siswa() {
         if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
         
@@ -333,8 +466,125 @@ class Home extends CI_Controller{
         
         $this->user_data['title'] = "Data Tugas - E-Learning Server";
         $this->user_data['tugas'] = true;
+
+        $result = $this->tugas_model->get();
+
+        $this->table->set_template($this->tmpl);
+        $this->table->set_heading('ID Tugas', 'Judul Tugas', 'Catatan', 'Soal', 'Action');
+
+        foreach($result['rows'] as $row){
+            $button_update_delete = '<div style="float:right;"><a style="margin-right:5px;" href="'.base_url().'home/updatetugas/'.$row['id_tugas'].'" class="btn btn-warning">
+            <i class="icon icon-pencil"></i> Update</a>';
+            $button_update_delete .= '<a href="'.base_url().'home/deletetugas/'.$row['id_tugas'].'" class="btn btn-danger" onclick="return deleteData(this,\''.$row['id_tugas'].'\');">
+            <i class="icon icon-trash"></i> Delete</a></div>';
+            $this->table->add_row(
+                array('data'=>$row['id_tugas'], 'class'=>'center'),
+                array('data'=>$row['judul_tugas'], 'class'=>'center'),
+                array('data'=>$row['catatan'], 'class'=>'center'),
+                '<button id="show_soal'.$row['id_tugas'].'" class="btn btn-warning" onclick="return viewSoal('.$row['id_tugas'].')">
+                 <i class="icon icon-pencil"></i> Show</button>',
+                $button_update_delete
+            );
+        }
+        $this->user_data['table'] = $this->table->generate();
         
         $this->load->view('tugas', $this->user_data);
+    }
+
+    public function createtugas() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+
+        $this->user_data['title'] = "Create Tugas - E-Learning Server";
+        $this->user_data['tugas'] = true;
+        $this->user_data['id'] = '';
+        $this->user_data['create'] = true;
+        $this->user_data['judul_tugas'] = (isset($data['judul_tugas'])) ? $data['judul_tugas'] : '';
+        $this->user_data['catatan'] = (isset($data['catatan'])) ? $data['catatan'] : '';
+        $this->user_data['isi_soal'] = (isset($data['isi_soal'])) ? $data['isi_soal'] : array('');
+
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+
+        $this->load->view('tugas', $this->user_data);
+    }
+
+    public function updatetugas($id_tugas=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_tugas==NULL) redirect ('home/tugas', 'refresh');
+
+        $row = $this->tugas_model->get_by_id($id_tugas);
+        $row_soal = $this->tugas_model->get_soal($id_tugas);
+        if(!$row || !$row_soal['num_rows']) redirect ('home/tugas', 'refresh');
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+        $isi_soal = array();
+
+        $this->user_data['title'] = "Update Tugas - E-Learning Server";
+        $this->user_data['tugas'] = true;
+        $this->user_data['id'] = $id_tugas;
+        $this->user_data['update'] = true;
+        $this->user_data['judul_tugas'] = (isset($data['judul_tugas'])) ? $data['judul_tugas'] : $row->judul_tugas;
+        $this->user_data['catatan'] = (isset($data['catatan'])) ? $data['catatan'] : $row->catatan;
+        foreach ($row_soal['rows'] as $soal) {
+            $isi_soal[] = $soal['isi_soal'];
+        }
+        $this->user_data['isi_soal'] = (isset($data['isi_soal'])) ? $data['isi_soal'] : $isi_soal;
+        
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+
+        $this->load->view('tugas', $this->user_data);
+    }
+
+    public function deletetugas($id_tugas=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_tugas==NULL) redirect ('home/tugas', 'refresh');
+
+        $result = $this->tugas_model->delete($id_tugas);
+        if($result) redirect ('home/tugas', 'refresh');
+    }
+
+    public function submittugas() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($this->input->post('batal')) redirect ('home/tugas', 'refresh');
+
+        $id = $this->input->post('id');
+        $proses = $this->input->post('proses');
+        $judul_tugas = $this->input->post('judul_tugas');
+        $catatan = $this->input->post('catatan');
+        $isi_soal = $this->input->post('isi_soal');
+
+        $data = array('judul_tugas'=>$judul_tugas, 'catatan'=>$catatan, 'isi_soal'=>$isi_soal);
+
+        switch ($proses) {
+            case 'create':
+                if(trim($judul_tugas)=='' || trim($catatan)=='' || in_array('', $isi_soal)){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createtugas', 'refresh');
+                } else {
+                    $result = $this->tugas_model->add(array('judul_tugas'=>$judul_tugas, 'catatan'=>$catatan), $isi_soal);
+                    if($result['result']) redirect ('home/tugas', 'refresh');
+                    else {
+                        $data['error'] = $result['error'];
+                        $this->session->set_flashdata('data', $data);
+                        redirect('home/createtugas', 'refresh');
+                    }
+                }
+                break;
+            case 'update':
+                if(trim($judul_tugas)=='' || trim($catatan)=='' || in_array('', $isi_soal)){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatetugas/'.$id, 'refresh');
+                } else {
+                    $sukses = $this->tugas_model->update($id, array('judul_tugas'=>$judul_tugas, 'catatan'=>$catatan), $isi_soal);
+                    if($sukses) redirect ('home/tugas', 'refresh');
+                }
+                break;
+            default:
+                break;
+        }
     }
 
 }

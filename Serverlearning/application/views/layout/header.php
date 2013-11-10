@@ -12,6 +12,7 @@
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.json-2.4.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.10.3.custom.js"></script>
+        <script type="text/javascript" src="js/nicEdit.js"></script>
     </head>
     <body>
         <div id="konfirmasi" style="display: none;">
