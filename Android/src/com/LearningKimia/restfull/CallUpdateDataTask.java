@@ -1,11 +1,22 @@
 package com.LearningKimia.restfull;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.LearningKimia.R;
 import com.LearningKimia.database.DatabaseHelper;
+import com.LearningKimia.model.Materi;
 import com.LearningKimia.util.Constant;
 
 import android.content.Context;
@@ -13,14 +24,23 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
+	private final String TAG = this.getClass().getCanonicalName();
 	private AsyncTaskCompleteListener<Object> callback;
 	private Context context;
 	private Handler handler;
 	private ArrayList<String> tableToUpdate;
 	private String username;
 	private String password;
+	
+	/*For download task*/
+	private static final int TIMEOUT = 120;
+	private final String ERROR = "INVALID_URL";
+	private final String FILE_CORRUPT = "FILE_CORRUPT";
+	private final String SUCCESS = "SUCCESS";
+	private final String CANCEL = "CANCEL";
 	
 	private DatabaseHelper dbHelper;
 	
@@ -54,6 +74,15 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 		    		dbHelper.initTable(tableToUpdate.get(i), result);
 		    		Log.i("result update", result);
 		    	}
+		    	
+		    	if(tableToUpdate.contains("t_materi")){
+		    		sendProgresMessage("Download update materi");
+		    		List<Materi> materis = dbHelper.getAllMateri();
+		    		for(Materi materi : materis){
+		    			downloadUpdateMateri(materi.getJudul());
+		    		}
+		    	}
+		    	
 		    	result = "{\"status\":\"1\",\"fullMessage\":\"Proses Sukses\"}";
 		    }
 		}catch(Exception e){
@@ -61,6 +90,96 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 			result = "{\"status\":\"0\",\"fullMessage\":\""+e.getMessage()+"\"}";
 		}
 		return result;
+	}
+	
+	private String downloadUpdateMateri(String judul){
+		String PATH = Constant.MATERI_PATH;
+		File file = new File(PATH);
+		file.delete();
+        file.mkdirs();
+        File destFile = new File(file, judul+".pdf");
+        
+        HttpURLConnection conn = null;
+		InputStream stream = null; //to read
+	    FileOutputStream out = null; //to write
+	    double fileSize = 0;
+	    double downloaded = 0; //
+	    BufferedOutputStream bufferOut = null;
+	    try {
+	    	String strUrl = Constant.DOWNLOAD_URL + URLEncoder.encode(judul + ".pdf" , "UTF-8").replace("+", "%20");
+	    	URL url = new URL(strUrl);
+	    	
+	    	conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(TIMEOUT * 1000);
+			conn.setReadTimeout(TIMEOUT * 1000);
+			conn.connect();
+			
+			if (conn.getResponseCode() == 404) {
+				conn.disconnect();
+				return ERROR + "Invalid Update URL";
+			}
+			
+			fileSize = conn.getContentLength();
+			out = new FileOutputStream(destFile);
+			final int fileSizeKb = (int) (fileSize / 1024) + 1;
+			stream = conn.getInputStream();
+
+			byte buffer[] = new byte[1024];
+		    int read = -1;
+		    int i = 0;
+		    while ((read = stream.read(buffer))> -1) {
+		    	i++;
+		        out.write(buffer, 0, read);
+		        if (isCancelled()) {
+		        	out.flush();
+		        	handler.post(new Runnable() {
+		        		public void run() {
+		        			Toast.makeText(context, "Download dibatalkan", Toast.LENGTH_LONG).show();
+		        		}
+		        	});
+
+		        	return CANCEL;
+		        }
+		        downloaded += read;
+		        if (i % 5 == 0) {
+		        	out.flush();
+		        	final int downloadedKb = (int) (downloaded / 1024);
+			        final int progress = (int) ((downloaded / fileSize) * 100);
+		        }
+		    }
+		    out.flush();
+		    out.close();
+			
+			return SUCCESS;
+	    } catch(Exception e){
+	    	Log.d("Error download", "error in reading/extract file", e);
+			return ERROR;
+	    } finally {
+	    	if (out != null) {
+				try {
+					out.close();
+				} catch (IOException ie) {
+					Log.d(TAG, "error in closing file", ie);
+				}
+			}
+			if (conn != null) {
+				try {
+					if (conn.getInputStream() != null)
+						conn.getInputStream().close();
+					if(conn.getErrorStream() != null)
+						conn.getErrorStream().close();
+				} catch (Exception e) {
+					Log.d(TAG, "error in closing connection", e);
+				}
+			}
+			if (bufferOut != null) {
+				try {
+					bufferOut.close();
+				} catch (IOException ie) {
+					Log.d(TAG, "error in closing file", ie);
+				}
+			}
+	    }
 	}
 	
 	private void sendProgresMessage(String pesan){

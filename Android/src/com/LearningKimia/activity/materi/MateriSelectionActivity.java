@@ -3,18 +3,23 @@ package com.LearningKimia.activity.materi;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.andpdf.pdfviewer.PdfViewerActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.LearningKimia.R;
+import com.LearningKimia.activity.PdfViewer;
 import com.LearningKimia.activity.base.BaseMenuListActivity;
 import com.LearningKimia.adapter.MenuListAdapter;
 import com.LearningKimia.database.DatabaseHelper;
 import com.LearningKimia.model.Bab;
 import com.LearningKimia.model.Materi;
 import com.LearningKimia.model.Menu;
+import com.LearningKimia.util.Constant;
 
 public class MateriSelectionActivity extends BaseMenuListActivity{
 	protected int semester = 0;
@@ -54,7 +59,11 @@ public class MateriSelectionActivity extends BaseMenuListActivity{
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		
+		Intent intent = new Intent(this, PdfViewer.class);
+		Materi materi = materis.get(position);
+		String urlPathFile = Constant.MATERI_PATH + materi.getJudul() + ".pdf";
+		intent.putExtra(PdfViewerActivity.EXTRA_PDFFILENAME, urlPathFile);
+		startActivity(intent);
 	}
 
 }

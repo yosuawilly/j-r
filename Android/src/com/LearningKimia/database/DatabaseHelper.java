@@ -276,6 +276,26 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	return babs;
     }
     
+    public List<Materi> getAllMateri(){
+    	database = this.getWritableDatabase();
+    	List<Materi> materis = new ArrayList<Materi>();
+    	String sql = "SELECT * FROM "+MATERI_TABLE;
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+        while(cursor.moveToNext()){
+        	Materi materi = new Materi();
+        	materi.setId_materi(cursor.getString(cursor.getColumnIndex("id_materi")));
+        	materi.setJudul(cursor.getString(cursor.getColumnIndex("judul")));
+        	materi.setId_bab(cursor.getString(cursor.getColumnIndex("id_bab")));
+        	materi.setSemester(cursor.getString(cursor.getColumnIndex("semester")));
+        	materi.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+        	materis.add(materi);
+        }
+    	database.close();
+    	cursor.close();
+    	return materis;
+    }
+    
     public List<Materi> getMateris(String semester, String idBab){
     	database = this.getWritableDatabase();
     	List<Materi> materis = new ArrayList<Materi>();
