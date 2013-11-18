@@ -6,11 +6,57 @@ class Rest extends CI_Controller {
         parent::__construct();
         $this->load->library('upload');
 
+        $this->load->model('bab_model');
+        $this->load->model('materi_model');
+        $this->load->model('siswa_model');
         $this->load->model('tugas_model');
+        $this->load->model('version_model');
     }
     
     public function login($username, $password) {
-        echo 'sukses '.$username.' '.$password;
+        $siswa = $this->siswa_model->get_by_username($username);
+        if(!$siswa){
+            $result = array('status'=>'0','fullMessage'=>'Username anda salah');
+            echo json_encode($result);
+        } else {
+            if($password != $siswa->password){
+                $result = array('status'=>'0','fullMessage'=>'Password anda salah');
+                echo json_encode($result);
+            } else {
+                $result = array('status'=>'1','fullMessage'=>'Login Sukses','siswa'=>$siswa);
+                echo json_encode($result);
+            }
+        }
+    }
+
+    public function getDataTable($table) {
+        switch ($table) {
+            case 't_bab':
+                $bab = $this->bab_model->get();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$bab['rows']);
+                echo json_encode($result);
+                break;
+            case 't_materi':
+                $materi = $this->materi_model->get();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$materi['rows']);
+                echo json_encode($result);
+                break;
+            case 't_tugas':
+                $tugas = $this->tugas_model->get();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$tugas['rows']);
+                echo json_encode($result);
+                break;
+            case 't_soal_tugas':
+
+                break;
+            default:
+                $result = array('status'=>'0','fullMessage'=>'Table tidak ditemukan');
+                echo json_encode($result);
+                break;
+        }
     }
 
     public function upload() {
@@ -67,6 +113,11 @@ class Rest extends CI_Controller {
         $row_soal = $this->tugas_model->get_soal($id_tugas);
 
         $result = array('judul_tugas'=>$row->judul_tugas, 'soal'=>$row_soal['rows']);
+        echo json_encode($result);
+    }
+
+    public function getTableVersion(){
+        $result = $this->version_model->get();
         echo json_encode($result);
     }
 

@@ -35,6 +35,13 @@ class Siswa_model extends CI_Model{
         return ($query->num_rows() > 0) ? $query->row() : false;
     }
 
+    public function get_by_username($username) {
+        $this->db->where($this->username, $username);
+        $this->db->limit(1);
+        $query = $this->db->get($this->table);
+        return ($query->num_rows() > 0) ? $query->row() : false;
+    }
+
     public function add($data) {
         $result = array();
         $this->db->insert($this->table, $data);
