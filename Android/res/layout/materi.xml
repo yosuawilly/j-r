@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:id="@+id/panel_header"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bk_materi_header">
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/panel_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bk_materi_footer"
+        android:layout_alignParentBottom="true">
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/panel_header"
+        android:layout_above="@+id/panel_footer"
+        android:orientation="vertical"
+        android:weightSum="2">
+        
+        <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="2">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/biru_abu"
+            android:layout_weight="1"
+            android:padding="10dp">
+            <ImageView 
+                android:id="@+id/button_semester1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/semester_1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/donker2"
+            android:layout_weight="1">
+            
+        </LinearLayout>
+    </LinearLayout>
+    
+        <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="2">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/donker2"
+            android:layout_weight="1">
+            
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/biru_abu"
+            android:layout_weight="1"
+            android:padding="10dp">
+            <ImageView 
+                android:id="@+id/button_semester2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/semester_2"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+        
+    </LinearLayout>
+    
+    <!--<LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/biru_abu"
+            android:layout_weight="0.5"
+            android:padding="5dp">
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/semester_1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/donker2"
+            android:layout_weight="0.5">
+            
+        </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/donker2"
+            android:layout_weight="0.5">
+            
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/biru_abu"
+            android:layout_weight="0.5">
+            
+        </LinearLayout>
+    </LinearLayout>-->
+    <!--<AbsoluteLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_x="144dp"
+            android:layout_y="292dp"
+            android:onClick="semester_2"
+            android:src="@drawable/semester_2" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_x="-26dp"
+            android:layout_y="124dp"
+            android:onClick="semester_1"
+            android:src="@drawable/semester_1" />
+
+</AbsoluteLayout>-->
+ </RelativeLayout>

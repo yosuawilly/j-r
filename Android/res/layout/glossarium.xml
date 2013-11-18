@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/putih"
+    android:orientation="vertical" >
+    
+    <FrameLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/bg_logo">
+        <ImageView 
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:background="@drawable/logo"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="visible"/>
+    </FrameLayout>
+    
+    <FrameLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="-5dp">
+        <TextView
+			android:id="@+id/headerText"				
+			android:layout_width="fill_parent"	
+			android:layout_height="50dp"
+			android:textSize="18dip"
+			android:textStyle="bold"	
+			android:textColor="@color/white"
+			android:gravity="center_vertical|center_horizontal"	
+			android:paddingTop="5dp"
+			android:text="Glosarium"
+			android:background="@drawable/bg_header_blue"/>
+        <Button 
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_button"
+            android:text="Back"
+            android:textColor="@color/white"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="2.5dp"
+            android:layout_marginLeft="5dp"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+        <EditText
+            android:id="@+id/pilNamaLaki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Tulis Huruf/Kata"
+            android:layout_weight="1"
+            android:text="" />
+        <Button
+            android:id="@+id/okNamaLaki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btnsearch"
+            android:text="" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <!-- THE DATA TABLE -->
+
+            <TableLayout
+                android:id="@+id/lytLinearNamalaki"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_marginRight="5dp"
+                        android:background="#b8e4fb"
+                        android:gravity="center"
+                        android:minWidth="80px"
+                        android:text="Nama"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:background="#b8e4fb"
+                        android:gravity="left"
+                        android:minWidth="180dp"
+                        android:text="Arti"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+    </HorizontalScrollView>
+
+</LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Learning chemistry</string>
+    <string name="app_name">LearningKimia</string>
+    <color name="hitam">#000000</color>
+    <color name="putih">#ffffff</color>
+    <color name="merah">#aa0000</color>
+    <color name="hijau">#00aa00</color>
+    <color name="kuning">#aaaa00</color>
+    <string name="katalog">Di Menu Katalog ini siswa dapat mencari pengertian tentang kimia</string>
+    <string name="materi">Di Menu materi ini siswa akan di sajikan materi mulai dari semester 1 dan semester 2 yang sudah disediakan oleh aplikasi</string>
+    <string name="soal">Di Menu soal ini siswa dapat latihan soal yang telah disajikan oleh aplikasi</string>
+    <string name="tugas">Di Menu tugas ini siswa mendapatkan tugas yang diberikan oleh guru</string>
+    <string name="update">Di menu update ini siswa akan menerima materi baru dari guru</string>
+    <string name="LogOut">Di menu Log Out ini siswa dapat keluar dari aplikasi</string>
+<string name="Test">Soal  </string>
+</resources>
