@@ -5,16 +5,22 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 import com.LearningKimia.R;
 import com.LearningKimia.activity.base.BaseMenuListActivity;
 import com.LearningKimia.adapter.MenuListAdapter;
+import com.LearningKimia.database.DatabaseHelper;
 import com.LearningKimia.model.Bab;
+import com.LearningKimia.model.Materi;
 import com.LearningKimia.model.Menu;
 
 public class MateriSelectionActivity extends BaseMenuListActivity{
 	protected int semester = 0;
 	protected Bab bab;
+	protected List<Materi> materis;
+	protected DatabaseHelper dbHelper;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +29,13 @@ public class MateriSelectionActivity extends BaseMenuListActivity{
 		
 		setHeaderText("Daftar Materi");
 		List<Menu> menus = new ArrayList<Menu>();
-		menus.add(new Menu("Test Materi"));
-		menus.add(new Menu("Test Materi 2"));
+		dbHelper = new DatabaseHelper(this);
+		materis = dbHelper.getMateris(String.valueOf(semester), String.valueOf(bab.getIdBab()));
+		if(materis!=null){
+			for(Materi materi : materis){
+				menus.add(new Menu(materi.getJudul()));
+			}
+		}
 		MenuListAdapter adapter = new MenuListAdapter(this, R.layout.list_layout, menus);
 		setListAdapter(adapter);
 	}
@@ -39,6 +50,11 @@ public class MateriSelectionActivity extends BaseMenuListActivity{
 				Log.i("semester", String.valueOf(semester));
 			}
 		}
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		
 	}
 
 }

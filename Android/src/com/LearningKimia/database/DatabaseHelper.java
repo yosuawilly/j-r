@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.LearningKimia.model.Bab;
+import com.LearningKimia.model.Materi;
 import com.LearningKimia.util.Constant;
 
 import android.content.Context;
@@ -183,6 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 			version = jobj.getString("version");
 			JSONArray table = jobj.getJSONArray("table");
 			int len = table.length();
+			String strSQL = "DELETE FROM "+BAB_TABLE;
+			database.execSQL(strSQL);
 			for(int i=0;i<len;i++){
 				sql = new StringBuffer();
 				sql.append("INSERT INTO ").append(BAB_TABLE).append(" values ")
@@ -209,7 +212,42 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	}
 	
     public void initTableMateri(String json){
-		
+    	database = this.getWritableDatabase();
+		StringBuffer sql;
+		String version = null;
+		boolean insertSukses = true;
+		try {
+			JSONObject jobj = new JSONObject(json);
+			version = jobj.getString("version");
+			JSONArray table = jobj.getJSONArray("table");
+			int len = table.length();
+			String strSQL = "DELETE FROM "+MATERI_TABLE;
+			database.execSQL(strSQL);
+			for(int i=0;i<len;i++){
+				sql = new StringBuffer();
+				sql.append("INSERT INTO ").append(MATERI_TABLE).append(" values ")
+				.append("('"+table.getJSONObject(i).getString("id_materi")+"', ")
+				.append("'"+table.getJSONObject(i).getString("judul")+"', ")
+				.append("'"+table.getJSONObject(i).getString("id_bab")+"', ")
+				.append("'"+table.getJSONObject(i).getString("semester")+"', ")
+				.append("'"+table.getJSONObject(i).getString("url")+"');");
+				database.execSQL(sql.toString());
+			}
+		} catch (JSONException e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} catch (Exception e){
+			insertSukses = false;
+			e.printStackTrace();
+		} finally {
+			if(insertSukses){
+				sql = new StringBuffer();
+				sql.append("UPDATE ").append(VERSION_TABLE).append(" SET versi = '"+version+"' ")
+				.append("WHERE nama_table = '"+MATERI_TABLE+"';");
+				database.execSQL(sql.toString());
+				Log.i("init table materi", "sukses");
+			}
+		}
 	}
     
     public void initTableTugas(String json){
@@ -236,6 +274,26 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	database.close();
     	cursor.close();
     	return babs;
+    }
+    
+    public List<Materi> getMateris(String semester, String idBab){
+    	database = this.getWritableDatabase();
+    	List<Materi> materis = new ArrayList<Materi>();
+    	String sql = "SELECT * FROM "+MATERI_TABLE+" WHERE semester = '"+semester+"' AND id_bab = '"+idBab+"'";
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+        while(cursor.moveToNext()){
+        	Materi materi = new Materi();
+        	materi.setId_materi(cursor.getString(cursor.getColumnIndex("id_materi")));
+        	materi.setJudul(cursor.getString(cursor.getColumnIndex("judul")));
+        	materi.setId_bab(cursor.getString(cursor.getColumnIndex("id_bab")));
+        	materi.setSemester(cursor.getString(cursor.getColumnIndex("semester")));
+        	materi.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+        	materis.add(materi);
+        }
+    	database.close();
+    	cursor.close();
+    	return materis;
     }
 	
 	public String getVersionOfTable(String tableName){
