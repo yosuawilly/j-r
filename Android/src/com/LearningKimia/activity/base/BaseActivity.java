@@ -1,5 +1,6 @@
 package com.LearningKimia.activity.base;
 
+import com.LearningKimia.LoginActivity;
 import com.LearningKimia.R;
 import com.LearningKimia.StartUpActivity;
 import com.LearningKimia.global.GlobalVar;
@@ -23,6 +24,7 @@ public class BaseActivity extends Activity implements OnClickListener{
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	
     long pauseTime = System.currentTimeMillis();
@@ -44,6 +46,12 @@ public class BaseActivity extends Activity implements OnClickListener{
 			startActivity(intent);
 			overridePendingTransition(0, 0);
 			finish();
+		} else {
+			if(getIntent().getBooleanExtra("EXIT", false)){
+				Intent intent = new Intent(this, LoginActivity.class);
+				startActivity(intent);
+				finish();
+			}
 		}
 	}
 

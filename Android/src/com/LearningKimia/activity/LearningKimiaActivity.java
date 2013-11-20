@@ -7,11 +7,14 @@ import com.LearningKimia.activity.CariGlossarium;
 import com.LearningKimia.activity.LearningKimiaActivity;
 import com.LearningKimia.activity.soal;
 import com.LearningKimia.activity.base.BaseActivity;
+import com.LearningKimia.activity.base.BaseMenuListActivity;
 import com.LearningKimia.activity.materi.MateriMenuActivity;
 import com.LearningKimia.global.GlobalVar;
 import com.LearningKimia.util.Functional;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -121,12 +124,21 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
 		case R.id.menu_table_periodik:
 			break;
 		case R.id.btn_logout:
-			intent = new Intent(this, LoginActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			GlobalVar.getInstance().clearAllObject();
-			startActivity(intent);
-			this.finish();
+			new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle("Keluar")
+	        .setMessage("Apakah anda yakin akan keluar dari aplikasi E-Learning?")
+	        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(LearningKimiaActivity.this, LoginActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					GlobalVar.getInstance().clearAllObject();
+					startActivity(intent);
+					LearningKimiaActivity.this.finish();
+				}
+			})
+			.setNegativeButton("Tidak", null).show();
 			break;
 		default:
 			break;
