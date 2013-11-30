@@ -69,6 +69,7 @@
 		  		android:padding="0dp"
 		  		android:layout_marginTop="10dip"
 		  		android:textSize="20sp"
+		  		android:textColor="@color/default_color_button_selector"
 		  		android:text="Login"/>
 		  <!-- Link to Registration Screen -->		
 		  

@@ -1,39 +1,45 @@
 package com.LearningKimia.activity;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import com.LearningKimia.R;
-import com.LearningKimia.R.layout;
 import com.LearningKimia.activity.base.BaseActivity;
+import com.LearningKimia.database.DatabaseHelper;
+import com.LearningKimia.database.KatalogDbHelper;
+import com.LearningKimia.global.GlobalVar;
+import com.LearningKimia.model.Katalog;
+import com.LearningKimia.util.Utility;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.database.Cursor;
-import android.database.SQLException;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-
-public class CariGlossarium extends BaseActivity implements OnClickListener{
+public class CariGlossarium extends BaseActivity implements OnClickListener, TextWatcher{
 	TableLayout lytLinear;
-	Button OK, bmenu;
-	TextView txtNama, txtArti;
-	SQLHelper myDbHelper;
-	EditText pilihan;
-	String pilNama;
-	protected Cursor cursor;
+	DatabaseHelper dbHelper;
+	KatalogDbHelper katalogDbHelper;
+	EditText editTextCari;
+	Button btnCari;
+	List<Katalog> katalogs;
+	private int posKatalogSelected;
 
 	/** Called when the activity is first created. */
     @Override
@@ -41,121 +47,201 @@ public class CariGlossarium extends BaseActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glossarium);
         
+        editTextCari = (EditText) findViewById(R.id.EditTextCari);
+        editTextCari.addTextChangedListener(this);
+        btnCari = (Button) findViewById(R.id.btnCari);
+        
+        dbHelper = new DatabaseHelper(this);
+        
         ((Button) findViewById(R.id.button_back)).setOnClickListener(this);
-        
-    /**    bmenu = (Button) findViewById (R.id.menu);
-		bmenu.setOnClickListener(new View.OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				startActivity (new Intent ("com.firdan.MENU"));
-			}
-		}); 
-      */
-      /**  pilihan = (EditText) findViewById (R.id.pilNamaLaki);
-        
-        OK = (Button) findViewById (R.id.okNamaLaki);
-        OK.setOnClickListener(new View.OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-			pilNama = pilihan.getText().toString();
-				//updateTable();	
-			}
-		});*/
+        btnCari.setOnClickListener(this);
           
-       /**lytLinear = (TableLayout)findViewById(R.id.lytLinearNamalaki);
-       myDbHelper = new SQLHelper(this);
-       
-      try{
-        	myDbHelper.createDataBase();
-        }catch (IOException ioe){
-        	throw new Error ("Unable to creata database");
-        }
-        try{
-        	Toast.makeText(this, "database dibuka", Toast.LENGTH_SHORT);
-        	myDbHelper.openDataBase();
-        }catch (SQLException sqle){
-        	throw sqle;
-        }
+        lytLinear = (TableLayout)findViewById(R.id.lytLinearNamalaki);
         
-        updateTable();*/
+        updateTable(null);
     }
     
 
-	public void updateTable(){	
+	public void updateTable(String cari){	
+    	lytLinear.removeViews(1, lytLinear.getChildCount() - 1);
     	
-    	Toast.makeText(this, "update table di akses", Toast.LENGTH_SHORT);
-    	myDbHelper.openDataBase();
-    	
-    	while (lytLinear.getChildCount() > 1){
-    		lytLinear.removeViewAt(1);
-    	}
-    	
-		ArrayList<ArrayList<Object>> data = myDbHelper.getAllRowsAsArrays(pilNama);
+		katalogs = dbHelper.getKatalogs(cari);
  
     	//buat baris baru setiap perulangan dan masukkan data ke dalam 
     	//masing-masing baris
 		
-    	for (int position=0; position < data.size(); position++)
+		int position = 0;
+    	for (Katalog katalog : katalogs)
     	{
-    		
-    		TableRow tableRow = new TableRow(this);
+    		TableRow tableRow = (TableRow) getLayoutInflater().inflate(R.layout.row_table_katalog, null);
     		tableRow.setOnClickListener(listener);
+    		tableRow.setId(position);
+    		tableRow.setTag(katalog.getNama());
+    		registerForContextMenu(tableRow);
     		
-    		ArrayList<Object> row = data.get(position);
-    		 
-    		txtNama = new TextView(this);
-    		txtNama.setText(row.get(0).toString());
-    		txtNama.setTextColor(Color.BLACK);
+    		TextView txtId = (TextView) tableRow.findViewById(R.id.TvIdKatalog);
+    		txtId.setText(String.valueOf(katalog.getId_katalog()));
+    		
+    		TextView txtNama = (TextView) tableRow.findViewById(R.id.TvNama);
     		txtNama.setTextSize(14);
-    		tableRow.addView(txtNama);
-			
-    		if (position % 2 == 0){
-    			txtNama.setBackgroundColor(Color.rgb(234, 234, 234));
-    		}else{
-    			txtNama.setBackgroundColor(Color.rgb(255, 255, 255));
-    		}
-
-    		txtArti = new TextView(this);
-    		txtArti.setText(row.get(1).toString());
-    		txtArti.setTextColor(Color.BLACK);
+    		txtNama.setText(katalog.getNama());
+    		
+    		TextView txtArti = (TextView) tableRow.findViewById(R.id.TvArti);
     		txtArti.setTextSize(14);
-    		tableRow.addView(txtArti);
+    		txtArti.setText(katalog.getArti());
     		
     		if (position % 2 == 0){
-    			txtArti.setBackgroundColor(Color.rgb(234, 234, 234));
+    			tableRow.setBackgroundColor(Color.rgb(234, 234, 234));
     		}else{
-    			txtArti.setBackgroundColor(Color.rgb(255, 255, 255));
+    			tableRow.setBackgroundColor(Color.rgb(255, 255, 255));
     		}
-    			
     		
     		lytLinear.addView(tableRow);
+    		
+    		position++;
     	}
     }
+	
+	public void tambahUpdateKatalog(final boolean isTambah, String nama, String arti){
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.tambah_katalog_layout);
+		dialog.setTitle((isTambah)?"Tambah Katalog":"Ubah Katalog");
+		
+		final EditText editNama = (EditText) dialog.findViewById(R.id.editNama);
+		final EditText editArti = (EditText) dialog.findViewById(R.id.editArti);
+		if(!isTambah) {
+			editNama.setEnabled(false);
+			editNama.setText(nama);
+			editArti.setText(arti);
+			editArti.requestFocus();
+		}
+		Button btnSimpan = (Button) dialog.findViewById(R.id.btnSimpan);
+		Button btnBatal = (Button) dialog.findViewById(R.id.btnBatal);
+		
+		btnSimpan.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String nama = editNama.getText().toString().trim();
+				String arti = editArti.getText().toString().trim();
+				if(nama.equals("") || arti.equals("")){
+					Utility.showMessage(CariGlossarium.this, "Tutup", "Anda belum memasukkan data dengan benar");
+				} else {
+					katalogDbHelper = new KatalogDbHelper(CariGlossarium.this);
+					if(isTambah)
+					katalogDbHelper.addKatalog(new Katalog(nama, arti));
+					else katalogDbHelper.updateKatalog(nama, arti);
+					updateTable(null);
+				}
+				dialog.dismiss();
+			}
+		});
+		btnBatal.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.show();
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		menu.setHeaderTitle(v.getTag().toString());
+		posKatalogSelected = v.getId();
+		inflater.inflate(R.menu.menu_katalog, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_edit:
+			if(katalogs!=null){
+				Katalog katalog = katalogs.get(posKatalogSelected);
+				tambahUpdateKatalog(false, katalog.getNama(), katalog.getArti());
+			}
+			return true;
+		case R.id.menu_delete:
+			if(katalogs!=null){
+				final Katalog katalog = katalogs.get(posKatalogSelected);
+				new AlertDialog.Builder(this).setTitle("Hapus "+katalog.getNama())
+				.setIcon(android.R.drawable.ic_dialog_alert).setMessage("Apakah anda yakin?")
+				.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						katalogDbHelper = new KatalogDbHelper(CariGlossarium.this);
+						katalogDbHelper.deleteKatalog(katalog.getNama());
+						dialog.dismiss();
+						updateTable(null);
+					}
+				})
+				.setNegativeButton("Tidak", null).show();
+			}
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.katalog_option_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		switch (item.getItemId()) {
+		case R.id.tambahKatalog:
+			tambahUpdateKatalog(true, "", "");
+			return true;
+		case R.id.mainMenu:
+			intent = new Intent(this, LearningKimiaActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			this.finish();
+			return true;
+		case R.id.logoutMenu:
+			new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle("Keluar")
+	        .setMessage("Apakah anda yakin akan keluar dari aplikasi E-Learning?")
+	        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(CariGlossarium.this, LearningKimiaActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.putExtra("EXIT", true);
+					GlobalVar.getInstance().clearAllObject();
+					startActivity(intent);
+					CariGlossarium.this.finish();
+				}
+			})
+			.setNegativeButton("Tidak", null).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
     
     public AdapterView.OnClickListener listener = new AdapterView.OnClickListener(){
 
-
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			AlertDialog.Builder alert = new AlertDialog.Builder(CariGlossarium.this);
-		      alert.setTitle("Artinya");
-		      LinearLayout lila1= new LinearLayout(CariGlossarium.this);
-		      lila1.setOrientation(1); 
-		      final TextView artinya = new TextView(CariGlossarium.this);
-		      lila1.addView(artinya);
-		      alert.setView(lila1);
-		      alert.create();
-		      alert.show();
-		    
-		    //  ArrayList<ArrayList<Object>> data = myDbHelper.getAllRowsAsArrays(pilNama);
-		     // for (int position=0; position < data.size(); position++)
-		    //	{
-		    //	  ArrayList<Object> row = data.get(position);
-		    //	  txtNama.setText(row.get(0).toString());
-		      artinya.setText(txtNama.getText());
-		    //	}   	
+//			AlertDialog.Builder alert = new AlertDialog.Builder(CariGlossarium.this);
+//		      alert.setTitle("Artinya");
+//		      LinearLayout lila1= new LinearLayout(CariGlossarium.this);
+//		      lila1.setOrientation(1); 
+//		      final TextView artinya = new TextView(CariGlossarium.this);
+//		      lila1.addView(artinya);
+//		      alert.setView(lila1);
+//		      alert.create();
+//		      alert.show();
 		}
     	
     };
@@ -166,8 +252,37 @@ public class CariGlossarium extends BaseActivity implements OnClickListener{
 		case R.id.button_back:
 			onBackPressed();
 			break;
+		case R.id.btnCari:
+			String cari = editTextCari.getText().toString().trim();
+			if(!cari.equals("")){
+				updateTable(cari);
+			}
+			break;
 		default:
 			break;
+		}
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		if(editTextCari.getText().toString().trim().equals("")){
+			updateTable(null);
 		}
 	}
 }

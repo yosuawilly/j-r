@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.LearningKimia.model.Bab;
+import com.LearningKimia.model.Katalog;
 import com.LearningKimia.model.Materi;
 import com.LearningKimia.util.Constant;
 
@@ -103,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				"nama VARCHAR(30), " +
 				"arti VARCHAR(30) " +
 				");");
+		initDefaultKatalog(db);
 		Log.i("create", "Katalog");
 	}
 	
@@ -160,6 +162,27 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL(sql3.toString());
 		db.execSQL(sql4.toString());
 		Log.i("create", "Version");
+	}
+	
+	public void initDefaultKatalog(SQLiteDatabase db){
+		List<Katalog> katalogs = new ArrayList<Katalog>(){{
+			add(new Katalog("1", "Satu"));
+			add(new Katalog("2", "Dua"));
+			add(new Katalog("3", "Tiga"));
+			add(new Katalog("4", "Empat"));
+			add(new Katalog("5", "Lima"));
+		}};
+		StringBuffer strSQL = new StringBuffer();
+		strSQL.append("INSERT INTO "+KATALOG_TABLE+" (nama, arti) ");
+		for(int i=0;i<katalogs.size();i++){
+			if(i!=0) strSQL.append(" UNION ");
+			
+			strSQL.append("SELECT '"+katalogs.get(i).getNama()+"' AS nama, ")
+			.append("'"+katalogs.get(i).getArti()+"' AS arti");
+		}
+		strSQL.append(";");
+		Log.i("sql katalog", strSQL.toString());
+		db.execSQL(strSQL.toString());
 	}
 	
 	public void initTable(String namaTable, String json){
@@ -314,6 +337,27 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	database.close();
     	cursor.close();
     	return materis;
+    }
+    
+    public List<Katalog> getKatalogs(String cari){
+    	database = this.getWritableDatabase();
+    	List<Katalog> katalogs = new ArrayList<Katalog>();
+    	String sql = "";
+    	if(cari==null){
+    		sql = "SELECT * FROM "+KATALOG_TABLE;
+    	} else sql = "SELECT * FROM "+KATALOG_TABLE+" WHERE nama LIKE '%"+cari+"%'";
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+    	while(cursor.moveToNext()){
+    		Katalog katalog = new Katalog();
+    		katalog.setId_katalog(cursor.getInt(cursor.getColumnIndex("id_katalog")));
+    		katalog.setNama(cursor.getString(cursor.getColumnIndex("nama")));
+    		katalog.setArti(cursor.getString(cursor.getColumnIndex("arti")));
+    		katalogs.add(katalog);
+    	}
+    	database.close();
+    	cursor.close();
+    	return katalogs;
     }
 	
 	public String getVersionOfTable(String tableName){

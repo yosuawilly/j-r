@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item 
+        android:id="@+id/tambahKatalog" 
+        android:title="Tambah Katalog"/>
+    <item 
+        android:id="@+id/mainMenu" 
+        android:title="Menu Utama"/>
+    <item 
+        android:id="@+id/logoutMenu" 
+        android:title="Keluar"/>
+
+</menu>
