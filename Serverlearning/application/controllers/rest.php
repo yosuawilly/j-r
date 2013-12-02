@@ -50,7 +50,10 @@ class Rest extends CI_Controller {
                 echo json_encode($result);
                 break;
             case 't_soal_tugas':
-
+                $soal_tugas = $this->tugas_model->get_all_soal();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$soal_tugas['rows']);
+                echo json_encode($result);
                 break;
             default:
                 $result = array('status'=>'0','fullMessage'=>'Table tidak ditemukan');
