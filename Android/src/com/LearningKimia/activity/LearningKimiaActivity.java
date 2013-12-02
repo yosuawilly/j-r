@@ -9,6 +9,7 @@ import com.LearningKimia.activity.soal;
 import com.LearningKimia.activity.base.BaseActivity;
 import com.LearningKimia.activity.base.BaseMenuListActivity;
 import com.LearningKimia.activity.materi.MateriMenuActivity;
+import com.LearningKimia.activity.tugas.TugasSelectionActivity;
 import com.LearningKimia.global.GlobalVar;
 import com.LearningKimia.util.Functional;
 
@@ -116,10 +117,12 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
 			startActivity(intent);
 			break;
 		case R.id.menu_quiz:
-			intent = new Intent (LearningKimiaActivity.this, soal.class);
-			startActivity(intent);
+//			intent = new Intent (LearningKimiaActivity.this, soal.class);
+//			startActivity(intent);
 			break;
 		case R.id.menu_tugas:
+			intent = new Intent(LearningKimiaActivity.this, TugasSelectionActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.menu_table_periodik:
 			break;

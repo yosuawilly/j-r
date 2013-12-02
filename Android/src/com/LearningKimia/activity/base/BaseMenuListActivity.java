@@ -1,6 +1,5 @@
 package com.LearningKimia.activity.base;
 
-import com.LearningKimia.LoginActivity;
 import com.LearningKimia.R;
 import com.LearningKimia.activity.LearningKimiaActivity;
 import com.LearningKimia.global.GlobalVar;

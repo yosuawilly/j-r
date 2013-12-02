@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import com.LearningKimia.model.Bab;
 import com.LearningKimia.model.Katalog;
 import com.LearningKimia.model.Materi;
+import com.LearningKimia.model.SoalTugas;
+import com.LearningKimia.model.Tugas;
 import com.LearningKimia.util.Constant;
 
 import android.content.Context;
@@ -274,11 +276,76 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	}
     
     public void initTableTugas(String json){
-		
+    	database = this.getWritableDatabase();
+		StringBuffer sql;
+		String version = null;
+		boolean insertSukses = true;
+		try {
+			JSONObject jobj = new JSONObject(json);
+			version = jobj.getString("version");
+			JSONArray table = jobj.getJSONArray("table");
+			int len = table.length();
+			String strSQL = "DELETE FROM "+TUGAS_TABLE;
+			database.execSQL(strSQL);
+			for(int i=0;i<len;i++){
+				sql = new StringBuffer();
+				sql.append("INSERT INTO ").append(TUGAS_TABLE).append(" values ")
+				.append("('"+table.getJSONObject(i).getString("id_tugas")+"', ")
+				.append("'"+table.getJSONObject(i).getString("judul_tugas")+"', ")
+				.append("'"+table.getJSONObject(i).getString("catatan")+"');");
+				database.execSQL(sql.toString());
+			}
+		} catch (JSONException e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} catch (Exception e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} finally {
+			if(insertSukses){
+				sql = new StringBuffer();
+				sql.append("UPDATE ").append(VERSION_TABLE).append(" SET versi = '"+version+"' ")
+				.append("WHERE nama_table = '"+TUGAS_TABLE+"';");
+				database.execSQL(sql.toString());
+				Log.i("init table tugas", "sukses");
+			}
+		}
 	}
     
     public void initTableSoalTugas(String json){
-		
+    	database = this.getWritableDatabase();
+		StringBuffer sql;
+		String version = null;
+		boolean insertSukses = true;
+		try {
+			JSONObject jobj = new JSONObject(json);
+			version = jobj.getString("version");
+			JSONArray table = jobj.getJSONArray("table");
+			int len = table.length();
+			String strSQL = "DELETE FROM "+SOALTUGAS_TABLE;
+			database.execSQL(strSQL);
+			for(int i=0;i<len;i++){
+				sql = new StringBuffer();
+				sql.append("INSERT INTO ").append(SOALTUGAS_TABLE).append(" values ")
+				.append("('"+table.getJSONObject(i).getString("isi_soal")+"', ")
+				.append("'"+table.getJSONObject(i).getString("id_tugas")+"');");
+				database.execSQL(sql.toString());
+			}
+		} catch (JSONException e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} catch (Exception e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} finally {
+			if(insertSukses){
+				sql = new StringBuffer();
+				sql.append("UPDATE ").append(VERSION_TABLE).append(" SET versi = '"+version+"' ")
+				.append("WHERE nama_table = '"+SOALTUGAS_TABLE+"';");
+				database.execSQL(sql.toString());
+				Log.i("init table soal tugas", "sukses");
+			}
+		}
 	}
     
     public List<Bab> getBabs(){
@@ -358,6 +425,41 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	database.close();
     	cursor.close();
     	return katalogs;
+    }
+    
+    public List<Tugas> getAllTugas(){
+    	database = this.getWritableDatabase();
+    	List<Tugas> tugass = new ArrayList<Tugas>();
+    	String sql = "SELECT * FROM "+TUGAS_TABLE;
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+    	while(cursor.moveToNext()){
+    		Tugas tugas = new Tugas();
+    		tugas.setId_tugas(cursor.getInt(cursor.getColumnIndex("id_tugas")));
+    		tugas.setJudul_tugas(cursor.getString(cursor.getColumnIndex("judul_tugas")));
+    		tugas.setCatatan(cursor.getString(cursor.getColumnIndex("catatan")));
+    		tugass.add(tugas);
+    	}
+    	database.close();
+    	cursor.close();
+    	return tugass;
+    }
+    
+    public List<SoalTugas> getSoalTugas(int idTugas){
+    	database = this.getWritableDatabase();
+    	List<SoalTugas> soalTugass = new ArrayList<SoalTugas>();
+    	String sql = "SELECT * FROM "+SOALTUGAS_TABLE+" WHERE id_tugas = '"+idTugas+"';";
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+    	while(cursor.moveToNext()){
+    		SoalTugas soalTugas = new SoalTugas();
+    		soalTugas.setId_tugas(cursor.getInt(cursor.getColumnIndex("id_tugas")));
+    		soalTugas.setIsi_soal(cursor.getString(cursor.getColumnIndex("isi_soal")));
+    		soalTugass.add(soalTugas);
+    	}
+    	database.close();
+    	cursor.close();
+    	return soalTugass;
     }
 	
 	public String getVersionOfTable(String tableName){
