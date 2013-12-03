@@ -70,6 +70,15 @@
         <activity android:name=".activity.tugas.TugasShowActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
+        <activity android:name=".activity.latihan.LatihanSelectionActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+        <activity android:name=".activity.latihan.score.ScoreSelectionActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+        <activity android:name=".activity.latihan.LatihanActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
     </application>
 
 </manifest>

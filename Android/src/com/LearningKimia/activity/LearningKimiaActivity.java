@@ -1,13 +1,11 @@
 package com.LearningKimia.activity;
 
-
 import com.LearningKimia.LoginActivity;
 import com.LearningKimia.R;
 import com.LearningKimia.activity.CariGlossarium;
 import com.LearningKimia.activity.LearningKimiaActivity;
-import com.LearningKimia.activity.soal;
 import com.LearningKimia.activity.base.BaseActivity;
-import com.LearningKimia.activity.base.BaseMenuListActivity;
+import com.LearningKimia.activity.latihan.LatihanSelectionActivity;
 import com.LearningKimia.activity.materi.MateriMenuActivity;
 import com.LearningKimia.activity.tugas.TugasSelectionActivity;
 import com.LearningKimia.global.GlobalVar;
@@ -21,7 +19,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 public class LearningKimiaActivity extends BaseActivity implements Functional{
@@ -117,8 +114,8 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
 			startActivity(intent);
 			break;
 		case R.id.menu_quiz:
-//			intent = new Intent (LearningKimiaActivity.this, soal.class);
-//			startActivity(intent);
+			intent = new Intent (LearningKimiaActivity.this, LatihanSelectionActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.menu_tugas:
 			intent = new Intent(LearningKimiaActivity.this, TugasSelectionActivity.class);
