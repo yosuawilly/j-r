@@ -36,7 +36,7 @@ import com.LearningKimia.util.Constant;
 import android.util.Log;
 
 /**
- * @author Yosua Willy
+ * @author Dwidasa
  * 10:59:04 AM
  */
 public class RestfulHttpMethod {

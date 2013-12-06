@@ -11,13 +11,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.LearningKimia.R;
 import com.LearningKimia.database.DatabaseHelper;
 import com.LearningKimia.model.Materi;
 import com.LearningKimia.util.Constant;
+import com.LearningKimia.util.Utility;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -57,13 +56,14 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 	@Override
 	protected String doInBackground(Object... arg0) {
 		String result = "{\"status\":\"0\",\"fullMessage\":\"Proses gagal\"}";
+		String resultLogin = "{\"status\":\"0\",\"fullMessage\":\"Login gagal\"}";
 		sendProgresMessage("Login proses");
 		String url = Constant.BASE_URL + "login/"+username+"/"+password;
 		try{
-		    result = RestfulHttpMethod.connect(url, Constant.REST_GET);
-		    JSONObject jobj = new JSONObject(result);
+		    resultLogin = RestfulHttpMethod.connect(url, Constant.REST_GET);
+		    JSONObject jobj = new JSONObject(resultLogin);
 		    if(jobj.getString("status").equals("0")){
-		    	return result;
+		    	return resultLogin;
 		    } else {
 		    	int len = tableToUpdate.size();
 		    	for(int i=0;i<len;i++){
@@ -83,7 +83,8 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 		    		}
 		    	}
 		    	
-		    	result = "{\"status\":\"1\",\"fullMessage\":\"Proses Sukses\"}";
+//		    	result = "{\"status\":\"1\",\"fullMessage\":\"Proses Sukses\"}";
+		    	result = resultLogin;
 		    }
 		}catch(Exception e){
 			e.printStackTrace();
@@ -93,7 +94,7 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 	}
 	
 	private String downloadUpdateMateri(String judul){
-		String PATH = Constant.MATERI_PATH;
+		String PATH = (Utility.isSDCardExist())?Constant.MATERI_PATH_SD_CARD:Constant.MATERI_PATH;
 		File file = new File(PATH);
 		file.delete();
         file.mkdirs();

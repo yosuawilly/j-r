@@ -4,7 +4,7 @@
 package com.LearningKimia.restfull;
 
 /**
- * @author Yosua Willy
+ * @author Dwidasa
  *
  */
 public enum RequestMethod {

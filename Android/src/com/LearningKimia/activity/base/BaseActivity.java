@@ -4,8 +4,6 @@ import com.LearningKimia.LoginActivity;
 import com.LearningKimia.R;
 import com.LearningKimia.StartUpActivity;
 import com.LearningKimia.global.GlobalVar;
-import com.LearningKimia.util.Functional;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

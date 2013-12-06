@@ -20,6 +20,7 @@ public class BaseTabActivity extends TabActivity{
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	
 	long pauseTime = System.currentTimeMillis();

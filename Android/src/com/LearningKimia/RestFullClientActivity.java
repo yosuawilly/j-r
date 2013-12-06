@@ -66,16 +66,18 @@ public class RestFullClientActivity extends Activity implements AsyncTaskComplet
 		b.putString(Constant.REST_RESULT, result);
 		intent.putExtras(b);
 		
-		try {
-			JSONObject jobj = new JSONObject(result);
-			if(jobj.getString("status").equals("0")){
-				setResult(FAILED_RETURN_CODE, intent);
-			} else {
-				setResult(SUCCESS_RETURN_CODE, intent);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		setResult(SUCCESS_RETURN_CODE, intent);
+		
+//		try {
+//			JSONObject jobj = new JSONObject(result);
+//			if(jobj.getString("status").equals("0")){
+//				setResult(FAILED_RETURN_CODE, intent);
+//			} else {
+//				setResult(SUCCESS_RETURN_CODE, intent);
+//			}
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
 		finish();
 	}
 

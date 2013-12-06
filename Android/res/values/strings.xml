@@ -3,6 +3,7 @@
 
     <string name="hello">Learning chemistry</string>
     <string name="app_name">LearningKimia</string>
+    <string name="message.problemKomunikasiServer">Problem komunikasi dengan server</string>
     <color name="hitam">#000000</color>
     <color name="putih">#ffffff</color>
     <color name="merah">#aa0000</color>

@@ -20,6 +20,7 @@ import com.LearningKimia.model.Bab;
 import com.LearningKimia.model.Materi;
 import com.LearningKimia.model.Menu;
 import com.LearningKimia.util.Constant;
+import com.LearningKimia.util.Utility;
 
 public class MateriSelectionActivity extends BaseMenuListActivity{
 	protected int semester = 0;
@@ -61,7 +62,7 @@ public class MateriSelectionActivity extends BaseMenuListActivity{
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Intent intent = new Intent(this, PdfViewer.class);
 		Materi materi = materis.get(position);
-		String urlPathFile = Constant.MATERI_PATH + materi.getJudul() + ".pdf";
+		String urlPathFile = ((Utility.isSDCardExist())?Constant.MATERI_PATH_SD_CARD:Constant.MATERI_PATH) + materi.getJudul() + ".pdf";
 		intent.putExtra(PdfViewerActivity.EXTRA_PDFFILENAME, urlPathFile);
 		startActivity(intent);
 	}

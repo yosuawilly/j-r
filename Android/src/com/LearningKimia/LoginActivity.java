@@ -112,6 +112,23 @@ public class LoginActivity extends BaseActivity implements Functional,OnClickLis
 		}
 	}
 	
+	public void setSiswaWasLogin(String result){
+		try {
+			JSONObject jobj = new JSONObject(result);
+			JSONObject j_siswa = jobj.getJSONObject("siswa");
+			Siswa siswa = new Siswa();
+			siswa.setIdSiswa(j_siswa.getString("id_siswa"));
+			siswa.setUsername(j_siswa.getString("username"));
+			siswa.setPassword(j_siswa.getString("password"));
+			siswa.setNama(j_siswa.getString("nama"));
+			siswa.setJenisKelamin(j_siswa.getString("jenis_kelamin"));
+			siswa.setAlamat(j_siswa.getString("alamat"));
+			GlobalVar.getInstance().setSiswa(siswa);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -119,16 +136,20 @@ public class LoginActivity extends BaseActivity implements Functional,OnClickLis
 			if(data!=null){
 				Bundle b = data.getExtras();
 				String result = b.getString(Constant.REST_RESULT);
-				if(resultCode == RestFullClientActivity.SUCCESS_RETURN_CODE){
-					Intent intent = new Intent(this, LearningKimiaActivity.class);
-					startActivity(intent);
-					finish();
-				} else {
-					try {
-						JSONObject jobj = new JSONObject(result);
-						Utility.showErrorMessage(this, jobj.getString("fullMessage"));
-					} catch (JSONException e) {
-						e.printStackTrace();
+				Log.i("result", result);
+				if(Utility.cekValidResult(result, this)){
+					if(resultCode == RestFullClientActivity.SUCCESS_RETURN_CODE){
+						setSiswaWasLogin(result); //set Object Siswa to GlobalVar
+						Intent intent = new Intent(this, LearningKimiaActivity.class);
+						startActivity(intent);
+						finish();
+					} else {
+						try {
+							JSONObject jobj = new JSONObject(result);
+							Utility.showErrorMessage(this, jobj.getString("fullMessage"));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -139,26 +160,20 @@ public class LoginActivity extends BaseActivity implements Functional,OnClickLis
 	public void onTaskComplete(Object... params) {
 		String result = (String)params[0];
 		Log.i("result", result);
-		try {
-			JSONObject jobj = new JSONObject(result);
-			if(jobj.getString("status").equals("0")){
-				Utility.showErrorMessage(this, jobj.getString("fullMessage"));
-			} else if(jobj.getString("status").equals("1")) {
-				JSONObject j_siswa = jobj.getJSONObject("siswa");
-				Siswa siswa = new Siswa();
-				siswa.setIdSiswa(j_siswa.getString("id_siswa"));
-				siswa.setUsername(j_siswa.getString("username"));
-				siswa.setPassword(j_siswa.getString("password"));
-				siswa.setNama(j_siswa.getString("nama"));
-				siswa.setJenisKelamin(j_siswa.getString("jenis_kelamin"));
-				siswa.setAlamat(j_siswa.getString("alamat"));
-				GlobalVar.getInstance().setSiswa(siswa);
-				Intent intent = new Intent(this, LearningKimiaActivity.class);
-				startActivity(intent);
-				finish();
+		if(Utility.cekValidResult(result, this)){
+			try {
+				JSONObject jobj = new JSONObject(result);
+				if(jobj.getString("status").equals("0")){
+					Utility.showErrorMessage(this, jobj.getString("fullMessage"));
+				} else if(jobj.getString("status").equals("1")) {
+					setSiswaWasLogin(result); //set Object Siswa to GlobalVar
+					Intent intent = new Intent(this, LearningKimiaActivity.class);
+					startActivity(intent);
+					finish();
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
 	}
 
