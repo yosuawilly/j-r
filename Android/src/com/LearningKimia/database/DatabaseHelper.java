@@ -1,5 +1,9 @@
 package com.LearningKimia.database;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +12,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.LearningKimia.model.Bab;
+import com.LearningKimia.model.JawabanQuiz;
 import com.LearningKimia.model.Katalog;
 import com.LearningKimia.model.Materi;
+import com.LearningKimia.model.Quiz;
 import com.LearningKimia.model.SoalTugas;
 import com.LearningKimia.model.Tugas;
 import com.LearningKimia.util.Constant;
@@ -21,6 +27,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
+	protected Context context;
 	
 	public static final String BAB_TABLE = "t_bab";
 	public static final String MATERI_TABLE = "t_materi";
@@ -35,6 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	public DatabaseHelper(Context context) {
 		super(context, Constant.DB_NAME, null, 1);
+		this.context = context;
 	}
 
 	@Override
@@ -102,7 +110,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	
 	public void createTableKatalog(SQLiteDatabase db){
 		db.execSQL("CREATE TABLE IF NOT EXISTS "+KATALOG_TABLE+" (" +
-				"id_katalog INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+//				"id_katalog INTEGER AUTO_INCREMENT PRIMARY KEY, " + //to set auto_increment do not use AUTO_INCREMENT
+				"id_katalog INTEGER PRIMARY KEY, " +
 				"nama VARCHAR(30), " +
 				"arti VARCHAR(30) " +
 				");");
@@ -112,21 +121,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	
 	public void createTableQuiz(SQLiteDatabase db){
 		db.execSQL("CREATE TABLE IF NOT EXISTS "+QUIZ_TABLE+" (" +
-				"id_quiz INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-				"soal_quiz VARCHAR(30), " +
-				"type_quiz VARCHAR(30), " +
-				"jawaban VARCHAR(30) " +
+//				"id_quiz INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+				"id_quiz INTEGER PRIMARY KEY, " +
+				"soal_quiz VARCHAR(30) " +
+//				"type_quiz VARCHAR(30), " +
+//				"jawaban VARCHAR(30) " +
 				");");
 		Log.i("create", "Quiz");
 	}
 	
 	public void createTableJawabanQuiz(SQLiteDatabase db){
 		db.execSQL("CREATE TABLE IF NOT EXISTS "+J_QUIZ_TABLE+" (" +
-				"id_jawaban INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+//				"id_jawaban INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+				"id_jawaban INTEGER PRIMARY KEY, " +
 				"jawaban VARCHAR(30), " +
 				"id_quiz INTEGER, " +
 				"benar BOOLEAN " +
 				");");
+		initDefaultQuiz(db);
 		Log.i("create", "Jawaban Quiz");
 	}
 	
@@ -185,6 +197,47 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		strSQL.append(";");
 		Log.i("sql katalog", strSQL.toString());
 		db.execSQL(strSQL.toString());
+	}
+	
+	public void initDefaultQuiz(SQLiteDatabase db){
+		try {
+			String line = "";
+			String statement = "";
+			int lastId = 0;
+			InputStream stream = context.getAssets().open("soal_latihan");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			while((line = reader.readLine()) != null){
+				if(!line.contains("@")){
+					statement += line;
+				} else {
+					String[]soals = statement.split("\\|\\|");
+					String sql = "INSERT INTO "+QUIZ_TABLE+" (soal_quiz) values ('"+soals[0]+"');";
+					db.execSQL(sql);
+					sql = "SELECT ROWID from "+QUIZ_TABLE+" order by ROWID DESC limit 1";
+					Cursor cursor = db.rawQuery(sql, null);
+					if(cursor != null && cursor.moveToFirst()){
+						lastId = (int)cursor.getLong(0);
+						Log.i("last id", String.valueOf(lastId));
+						StringBuffer strSQL = new StringBuffer();
+						strSQL.append("INSERT INTO "+J_QUIZ_TABLE+" (jawaban, id_quiz, benar) ");
+						for(int i=1;i<soals.length;i++){
+							if(i!=1) strSQL.append(" UNION ");
+							
+							strSQL.append("SELECT '"+( (soals[i].startsWith("#"))?soals[i].substring(1):soals[i] )+"' AS jawaban, ")
+							.append("'"+lastId+"' AS id_quiz, ")
+							.append( ((soals[i].startsWith("#"))?1:0) + " AS benar");
+						}
+						strSQL.append(";");
+						Log.i("strSQL", strSQL.toString());
+						db.execSQL(strSQL.toString());
+					}
+//					Log.i("line", soals[0]);
+					statement = "";
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void initTable(String namaTable, String json){
@@ -460,6 +513,36 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	database.close();
     	cursor.close();
     	return soalTugass;
+    }
+    
+    public List<Quiz> getQuiz(){
+    	database = this.getWritableDatabase();
+    	List<Quiz> quizs = new ArrayList<Quiz>();
+    	String sql = "SELECT * FROM "+QUIZ_TABLE;
+    	Cursor cursor = database.rawQuery(sql, null);
+    	if(cursor!=null)
+    	while (cursor.moveToNext()) {
+    		int id_quiz = cursor.getInt(cursor.getColumnIndex("id_quiz"));
+    		String soal_quiz = cursor.getString(cursor.getColumnIndex("soal_quiz"));
+    		List<JawabanQuiz> jawabanQuizs = new ArrayList<JawabanQuiz>();
+			sql = "SELECT * FROM "+J_QUIZ_TABLE+" WHERE id_quiz = '"+id_quiz+"'";
+			Cursor c_jwb = database.rawQuery(sql, null);
+			if(c_jwb!=null){
+				while(c_jwb.moveToNext()){
+					int id_jawaban = c_jwb.getInt(c_jwb.getColumnIndex("id_jawaban"));
+					String jawaban = c_jwb.getString(c_jwb.getColumnIndex("jawaban"));
+					boolean benar = (c_jwb.getString(c_jwb.getColumnIndex("benar")).equals("1"))?true:false;
+					JawabanQuiz jawabanQuiz = new JawabanQuiz(id_jawaban, jawaban, id_quiz, benar);
+					jawabanQuizs.add(jawabanQuiz);
+				}
+				c_jwb.close();
+			}
+			Quiz quiz = new Quiz(id_quiz, soal_quiz, jawabanQuizs);
+			quizs.add(quiz);
+		}
+    	database.close();
+    	cursor.close();
+    	return quizs;
     }
 	
 	public String getVersionOfTable(String tableName){

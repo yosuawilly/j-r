@@ -2,14 +2,16 @@ package com.LearningKimia.util;
 
 public final class Constant {
 	
-//	public static final String BASE_URL = "http://10.0.2.2/Serverlearning/rest/";
-//	public static final String DOWNLOAD_URL = "http://10.0.2.2/Serverlearning/materi/";
-	public static final String BASE_URL = "http://192.168.16.90/Serverlearning/rest/";
-	public static final String DOWNLOAD_URL = "http://192.168.16.90/Serverlearning/materi/";
+	public static final String BASE_URL = "http://10.0.2.2/Serverlearning/rest/";
+	public static final String DOWNLOAD_URL = "http://10.0.2.2/Serverlearning/materi/";
+//	public static final String BASE_URL = "http://10.252.241.122/Serverlearning/rest/";
+//	public static final String DOWNLOAD_URL = "http://10.252.241.122/Serverlearning/materi/";
 	public static final String DB_NAME="LearningKimiaDB";
 	public static final String DB_PATH="/data/data/com.LearningKimia/databases/";
 	public static final String MATERI_PATH="/data/data/com.LearningKimia/materi/";
 	public static final String MATERI_PATH_SD_CARD=android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+"/materi/";
+	
+	public static final int max_soal_latihan = 10;
 	
 	public static final int REST_GET = 0;
 	public static final int REST_PUT = 1;
