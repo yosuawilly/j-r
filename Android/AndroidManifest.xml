@@ -80,6 +80,9 @@
         <activity android:name=".activity.latihan.LatihanActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
+        <activity android:name=".activity.TablePeriodikActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
     </application>
 
 </manifest>

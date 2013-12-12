@@ -122,6 +122,8 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
 			startActivity(intent);
 			break;
 		case R.id.menu_table_periodik:
+			intent = new Intent(this, TablePeriodikActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.btn_logout:
 			new AlertDialog.Builder(this)
