@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/latihan_background2"
+        android:orientation="vertical"
+        android:gravity="center_horizontal|top"
+        android:padding="20dp">
+        
+        <ScrollView 
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp">
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Score Anda"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_marginBottom="10dp"/>
+            <TextView 
+                android:id="@+id/scoreTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="0"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_marginBottom="20dp"/>
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
+                <TextView 
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nama"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <EditText 
+                    android:id="@+id/namaEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_bg_default"
+                    android:singleLine="true"
+                    android:padding="7dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
+                <TextView 
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Jumlah Soal"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <TextView 
+                    android:id="@+id/jumlahSoalTv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="10"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
+                <TextView 
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Benar"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <TextView 
+                    android:id="@+id/jawabanBenarTv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="10"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+            <Button android:id="@+id/btnOk" 
+		  		android:layout_width="fill_parent"
+		  		android:layout_height="40dp"
+		  		android:background="@drawable/button_default"
+		  		android:padding="0dp"
+		  		android:layout_marginTop="10dip"
+		  		android:textSize="20sp"
+		  		android:textColor="@color/default_color_button_selector"
+		  		android:text="OK"/>
+        </LinearLayout>
+        
+        </ScrollView>
+        
+    </RelativeLayout>
+
+</LinearLayout>

@@ -7,6 +7,7 @@ import com.LearningKimia.activity.LearningKimiaActivity;
 import com.LearningKimia.activity.base.BaseActivity;
 import com.LearningKimia.activity.latihan.LatihanSelectionActivity;
 import com.LearningKimia.activity.materi.MateriMenuActivity;
+import com.LearningKimia.activity.periodik.TablePeriodikActivity;
 import com.LearningKimia.activity.tugas.TugasSelectionActivity;
 import com.LearningKimia.global.GlobalVar;
 import com.LearningKimia.util.Functional;

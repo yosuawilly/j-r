@@ -1,4 +1,4 @@
-package com.LearningKimia.activity;
+package com.LearningKimia.activity.periodik;
 
 import android.graphics.Paint;
 import android.os.Bundle;

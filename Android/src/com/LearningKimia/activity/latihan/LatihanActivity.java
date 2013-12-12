@@ -3,6 +3,7 @@ package com.LearningKimia.activity.latihan;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -109,6 +110,9 @@ public class LatihanActivity extends BaseMyActivity{
 				jawaban.add(currentIdxSoal, getJawaban());
 				currentIdxSoal++;
 				showSoal();
+			} else {
+				Intent intent = new Intent(this, LatihanShowResultActivity.class);
+				startActivity(intent);
 			}
 			break;
 		default:
