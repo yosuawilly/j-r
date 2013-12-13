@@ -19,6 +19,7 @@ import com.LearningKimia.model.Quiz;
 import com.LearningKimia.model.SoalTugas;
 import com.LearningKimia.model.Tugas;
 import com.LearningKimia.util.Constant;
+import com.LearningKimia.util.ScoreType;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -37,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	public static final String QUIZ_TABLE = "t_quiz";
 	public static final String J_QUIZ_TABLE = "t_jawaban_quiz";
 	public static final String VERSION_TABLE = "t_version";
+	public static final String SCORE_TABLE = "t_score";
 	
 	protected SQLiteDatabase database;
 
@@ -55,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		createTableQuiz(db);
 		createTableJawabanQuiz(db);
 		createTableVersion(db);
+		createTableScore(db);
 	}
 
 	@Override
@@ -67,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE IF EXISTS " + QUIZ_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + J_QUIZ_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + VERSION_TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + SCORE_TABLE);
 		
 		onCreate(db);
 	}
@@ -176,6 +180,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL(sql3.toString());
 		db.execSQL(sql4.toString());
 		Log.i("create", "Version");
+	}
+	
+	public void createTableScore(SQLiteDatabase db){
+		db.execSQL("CREATE TABLE IF NOT EXISTS "+SCORE_TABLE+" (" +
+				"id_score INTEGER PRIMARY KEY, " +
+				"nama VARCHAR(30), " +
+				"score VARCHAR(30), " +
+				"type VARCHAR(15)" +
+				");");
+		Log.i("create", "Score");
 	}
 	
 	public void initDefaultKatalog(SQLiteDatabase db){

@@ -86,6 +86,9 @@
         <activity android:name="com.LearningKimia.activity.latihan.LatihanShowResultActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
+        <activity android:name="com.LearningKimia.activity.latihan.score.ScoreViewActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
     </application>
 
 </manifest>

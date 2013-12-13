@@ -99,6 +99,19 @@ public class LatihanActivity extends BaseMyActivity{
 		}
 	}
 	
+	public int getJawabanBenar(){
+		int jawabanbenar = 0;
+		if(quizs.size() == jawaban.size()){
+			for(int i=0; i<quizs.size(); i++){
+				if(jawaban.get(i)==-1) continue; //berarti jawaban tidak diisi
+				if( quizs.get(i).getJawabanQuizs().get(jawaban.get(i)).isBenar() ){
+					jawabanbenar++;
+				}
+			}
+		} else jawabanbenar = -1;
+		return jawabanbenar;
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -111,8 +124,17 @@ public class LatihanActivity extends BaseMyActivity{
 				currentIdxSoal++;
 				showSoal();
 			} else {
-				Intent intent = new Intent(this, LatihanShowResultActivity.class);
-				startActivity(intent);
+				jawaban.add(currentIdxSoal, getJawaban());
+				
+				int jawabanBenar = getJawabanBenar();
+				int score = ( 100 / quizs.size() ) * jawabanBenar;
+				if(jawabanBenar != -1){
+					Intent intent = new Intent(this, LatihanShowResultActivity.class);
+					intent.putExtra("score", score);
+					intent.putExtra("jumlah_soal", quizs.size());
+					intent.putExtra("jawaban_benar", jawabanBenar);
+					startActivity(intent);
+				}
 			}
 			break;
 		default:
