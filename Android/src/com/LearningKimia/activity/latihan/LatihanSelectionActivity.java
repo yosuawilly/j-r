@@ -3,7 +3,11 @@ package com.LearningKimia.activity.latihan;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
@@ -12,9 +16,11 @@ import android.widget.LinearLayout;
 
 import com.LearningKimia.R;
 import com.LearningKimia.activity.base.BaseMyActivity;
+import com.LearningKimia.activity.latihan.periodik.LatihanPeriodikActivity;
 import com.LearningKimia.activity.latihan.score.ScoreSelectionActivity;
 import com.LearningKimia.database.DatabaseHelper;
 import com.LearningKimia.model.Quiz;
+import com.LearningKimia.model.SoalPeriodik;
 import com.LearningKimia.util.Constant;
 import com.LearningKimia.util.MyLCG;
 
@@ -95,7 +101,7 @@ public class LatihanSelectionActivity extends BaseMyActivity{
 			startActivity(intent);
 			break;
 		case R.id.btnPeriodik:
-			
+			new LoadSoalPeriodik(this).execute(new Object());
 			break;
 		case R.id.btnScore:
 			intent = new Intent(this, ScoreSelectionActivity.class);
@@ -108,6 +114,56 @@ public class LatihanSelectionActivity extends BaseMyActivity{
 			super.onClick(v);
 			break;
 		}
+	}
+	
+	public class LoadSoalPeriodik extends AsyncTask<Object, String, List<SoalPeriodik>>{
+		ProgressDialog dialog;
+		Context context;
+		
+		public LoadSoalPeriodik(Context context) {
+			this.context = context;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			dialog = ProgressDialog.show(context,    
+	                "Please wait...", "Acak Soal Periodik", true, true, 
+	                new DialogInterface.OnCancelListener(){
+	                @Override
+	                public void onCancel(DialogInterface dialog) {
+	                }
+	            }
+	        );
+		}
+
+		@Override
+		protected List<SoalPeriodik> doInBackground(Object... params) {
+			DatabaseHelper dbHelper = new DatabaseHelper(context);
+			List<SoalPeriodik> soalPeriodiks = dbHelper.getAllSoalPeriodik();
+			List<SoalPeriodik> acakSoal = new ArrayList<SoalPeriodik>();
+			int[]acak = MyLCG.getLCG(soalPeriodiks.size());
+			for(int i=0;i<acak.length;i++){
+				if(i>=Constant.max_soal_latihan_periodik) break;
+				if(acakSoal.contains(soalPeriodiks.get(acak[i]))){
+					for(SoalPeriodik s : soalPeriodiks){
+						if(!acakSoal.contains(s)){
+							acakSoal.add(s);
+							break;
+						}
+					}
+				} else 
+				acakSoal.add(soalPeriodiks.get(acak[i]));
+			}
+			return acakSoal;
+		}
+		
+		@Override
+		protected void onPostExecute(List<SoalPeriodik> soalPeriodiks) {
+			Intent intent = new Intent(LatihanSelectionActivity.this, LatihanPeriodikActivity.class);
+			intent.putParcelableArrayListExtra("soal_periodik", (ArrayList<? extends Parcelable>) soalPeriodiks);
+			startActivity(intent);
+		}
+		
 	}
 
 }

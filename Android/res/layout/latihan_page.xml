@@ -28,6 +28,14 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp">
                 
+                <TextView 
+                    android:id="@+id/jumlah_soal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:textSize="15sp"
+                    android:text="1/20"/>
+                
                 <LinearLayout 
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"

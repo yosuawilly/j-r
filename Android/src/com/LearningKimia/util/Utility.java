@@ -1,5 +1,8 @@
 package com.LearningKimia.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 
 public class Utility {
 	
@@ -91,6 +95,18 @@ public class Utility {
         	return false;
         }
         return true;
+	}
+	
+	public static Drawable getDrawableFromAsset(Context context, String imageFileName){
+		InputStream stream;
+		try {
+			stream = context.getAssets().open(imageFileName);
+			Drawable d = Drawable.createFromStream(stream, null);
+			return d;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

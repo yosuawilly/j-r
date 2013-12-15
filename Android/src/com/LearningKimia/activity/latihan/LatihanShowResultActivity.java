@@ -2,6 +2,7 @@ package com.LearningKimia.activity.latihan;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ public class LatihanShowResultActivity extends BaseMyActivity{
 	EditText namaEdit;
 	TextView scoreTv, jumlahSoalTv, jawabanBenarTv;
 	int score, jumlahSoal, jawabanBenar;
+	ScoreType scoreType;
 	
 	ScoreDbHelper scoreDbHelper;
 	
@@ -37,6 +39,7 @@ public class LatihanShowResultActivity extends BaseMyActivity{
 			score = bundle.getInt("score");
 			jumlahSoal = bundle.getInt("jumlah_soal");
 			jawabanBenar = bundle.getInt("jawaban_benar");
+			scoreType = bundle.getParcelable("type");
 		}
 	}
 	
@@ -84,6 +87,8 @@ public class LatihanShowResultActivity extends BaseMyActivity{
 				Score score = new Score(0, nama, String.valueOf(this.score), ScoreType.PILIHAN_GANDA);
 				scoreDbHelper.addScore(score);
 				Intent intent = new Intent(this, ScoreViewActivity.class);
+				intent.putExtra("fromLatihan", true);
+				intent.putExtra("type", (Parcelable)scoreType);
 				startActivity(intent);
 			}
 			break;
@@ -91,6 +96,11 @@ public class LatihanShowResultActivity extends BaseMyActivity{
 			super.onClick(v);
 			break;
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+//		super.onBackPressed();
 	}
 
 	@Override

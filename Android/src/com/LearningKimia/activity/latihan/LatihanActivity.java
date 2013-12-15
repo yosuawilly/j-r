@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -13,9 +14,10 @@ import android.widget.TextView;
 import com.LearningKimia.R;
 import com.LearningKimia.activity.base.BaseMyActivity;
 import com.LearningKimia.model.Quiz;
+import com.LearningKimia.util.ScoreType;
 
 public class LatihanActivity extends BaseMyActivity{
-	protected TextView nomorSoal, isiSoal;
+	protected TextView nomorSoal, isiSoal, jumlahSoalTv;
 	protected RadioButton rbJwb1, rbJwb2, rbJwb3, rbJwb4;
 	protected Button btnBack, btnNext;
 	protected List<Quiz> quizs;
@@ -45,6 +47,7 @@ public class LatihanActivity extends BaseMyActivity{
 		super.initDesign();
 		nomorSoal = (TextView) findViewById(R.id.nomorSoal);
 		isiSoal = (TextView) findViewById(R.id.isiSoal);
+		jumlahSoalTv = (TextView) findViewById(R.id.jumlah_soal);
 		
 		rbJwb1 = (RadioButton) findViewById(R.id.jwb1);
 		rbJwb2 = (RadioButton) findViewById(R.id.jwb2);
@@ -72,6 +75,8 @@ public class LatihanActivity extends BaseMyActivity{
 	
 	public void showSoal(){
 		Quiz quiz = quizs.get(currentIdxSoal);
+		jumlahSoalTv.setText(String.valueOf(currentIdxSoal+1) + "/" + String.valueOf(quizs.size()));
+		
 		nomorSoal.setText((currentIdxSoal+1)+". ");
 		isiSoal.setText(quiz.getSoal_quiz());
 		rbJwb1.setText((quiz.getJawabanQuizs().get(0)!=null)?quiz.getJawabanQuizs().get(0).getJawaban():"");
@@ -133,6 +138,7 @@ public class LatihanActivity extends BaseMyActivity{
 					intent.putExtra("score", score);
 					intent.putExtra("jumlah_soal", quizs.size());
 					intent.putExtra("jawaban_benar", jawabanBenar);
+					intent.putExtra("type", (Parcelable)ScoreType.PILIHAN_GANDA);
 					startActivity(intent);
 				}
 			}

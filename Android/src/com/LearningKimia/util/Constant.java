@@ -10,8 +10,10 @@ public final class Constant {
 	public static final String DB_PATH="/data/data/com.LearningKimia/databases/";
 	public static final String MATERI_PATH="/data/data/com.LearningKimia/materi/";
 	public static final String MATERI_PATH_SD_CARD=android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+"/materi/";
+	public static final String IMAGE_PERIODIK_PATH = "imagePeriodik/";
 	
 	public static final int max_soal_latihan = 10;
+	public static final int max_soal_latihan_periodik = 10;
 	public static final int max_jumlah_score = 10;
 	
 	public static final int REST_GET = 0;

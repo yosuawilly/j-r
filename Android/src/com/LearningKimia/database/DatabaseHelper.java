@@ -16,11 +16,10 @@ import com.LearningKimia.model.JawabanQuiz;
 import com.LearningKimia.model.Katalog;
 import com.LearningKimia.model.Materi;
 import com.LearningKimia.model.Quiz;
+import com.LearningKimia.model.SoalPeriodik;
 import com.LearningKimia.model.SoalTugas;
 import com.LearningKimia.model.Tugas;
 import com.LearningKimia.util.Constant;
-import com.LearningKimia.util.ScoreType;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -557,6 +556,23 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     	database.close();
     	cursor.close();
     	return quizs;
+    }
+    
+    public List<SoalPeriodik> getAllSoalPeriodik(){
+    	List<SoalPeriodik> soalPeriodiks = new ArrayList<SoalPeriodik>();
+    	String line = "";
+    	try {
+			InputStream stream = context.getAssets().open("soal_latihan_periodik");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			while((line = reader.readLine()) != null){
+				String[]soals = line.split("\\|\\|");
+				SoalPeriodik soalPeriodik = new SoalPeriodik(soals[0], soals[1]);
+				soalPeriodiks.add(soalPeriodik);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	return soalPeriodiks;
     }
 	
 	public String getVersionOfTable(String tableName){
