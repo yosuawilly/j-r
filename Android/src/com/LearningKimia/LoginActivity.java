@@ -21,6 +21,7 @@ import com.LearningKimia.restfull.AsyncTaskCompleteListener;
 import com.LearningKimia.restfull.CallWebServiceTask;
 import com.LearningKimia.util.Constant;
 import com.LearningKimia.util.Functional;
+import com.LearningKimia.util.ResourceUtil;
 import com.LearningKimia.util.Utility;
 
 public class LoginActivity extends BaseActivity implements Functional,OnClickListener,AsyncTaskCompleteListener<Object>{
@@ -173,6 +174,7 @@ public class LoginActivity extends BaseActivity implements Functional,OnClickLis
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				Utility.showErrorMessage(this, ResourceUtil.getBundle().getString("LK-0000"));
 			}
 		}
 	}

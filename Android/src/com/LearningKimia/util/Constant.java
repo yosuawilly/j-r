@@ -11,6 +11,7 @@ public final class Constant {
 	public static final String MATERI_PATH="/data/data/com.LearningKimia/materi/";
 	public static final String MATERI_PATH_SD_CARD=android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+"/materi/";
 	public static final String IMAGE_PERIODIK_PATH = "imagePeriodik/";
+	public static final String IMAGE_VIEW_PERIODIK_PATH = "imageViewPeriodik/";
 	
 	public static final int max_soal_latihan = 10;
 	public static final int max_soal_latihan_periodik = 10;

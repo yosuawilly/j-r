@@ -2,7 +2,6 @@ package com.LearningKimia.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,7 +11,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class Utility {
 	
@@ -107,6 +108,22 @@ public class Utility {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static String[]getAllFilesInAsset(Context context, String path){
+		String [] files = null;
+		AssetManager assetManager = context.getAssets();
+		try {
+			files = assetManager.list(path);
+			if(files!=null){
+				for(int i=0;i<files.length;i++){
+					Log.i("file", files[i]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return files;
 	}
 
 }

@@ -84,7 +84,7 @@ public class LatihanShowResultActivity extends BaseMyActivity{
 				Utility.showMessage(this, "OK", "Anda belum memasukkan nama");
 			} else {
 				String nama = namaEdit.getText().toString();
-				Score score = new Score(0, nama, String.valueOf(this.score), ScoreType.PILIHAN_GANDA);
+				Score score = new Score(0, nama, String.valueOf(this.score), scoreType);
 				scoreDbHelper.addScore(score);
 				Intent intent = new Intent(this, ScoreViewActivity.class);
 				intent.putExtra("fromLatihan", true);

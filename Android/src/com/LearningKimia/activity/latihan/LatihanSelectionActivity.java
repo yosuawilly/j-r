@@ -159,6 +159,7 @@ public class LatihanSelectionActivity extends BaseMyActivity{
 		
 		@Override
 		protected void onPostExecute(List<SoalPeriodik> soalPeriodiks) {
+			if(dialog!=null) dialog.dismiss();
 			Intent intent = new Intent(LatihanSelectionActivity.this, LatihanPeriodikActivity.class);
 			intent.putParcelableArrayListExtra("soal_periodik", (ArrayList<? extends Parcelable>) soalPeriodiks);
 			startActivity(intent);
