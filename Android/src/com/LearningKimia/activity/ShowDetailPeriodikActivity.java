@@ -1,5 +1,6 @@
 package com.LearningKimia.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,7 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 		Bundle bundle = getIntent().getExtras();
 		if(bundle!=null){
 			indexViewToView = bundle.getInt("index");
+			indexViewToView--;
 		}
 	}
 	
@@ -41,6 +43,12 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 		super.initDesign();
 		mViewFlipper = (ViewFlipper) this.findViewById(R.id.view_flipper);
 		buildViewFliper();
+		if(indexViewToView<=periodikViews.size()-1){
+			int indexView = mViewFlipper.indexOfChild(periodikViews.get(indexViewToView));
+			if(indexView!=-1){
+				mViewFlipper.setDisplayedChild(indexView);
+			}
+		}
 //		mViewFlipper.setDisplayedChild(mViewFlipper.indexOfChild(periodikViews.get(indexViewToView)));
         mViewFlipper.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -77,10 +85,14 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
     }
 	
 	protected void buildViewFliper(){
+		periodikViews = new ArrayList<ImageView>();
 		String[]files = Utility.getAllFilesInAsset(this, Constant.IMAGE_VIEW_PERIODIK_PATH);
 		for(int i=0; i<files.length; i++){
-			addImageToFlipper(files[i]);
+			Log.i("files", files[i]);
+			if(files[i].contains("png") || files[i].contains("jpg") || files[i].contains("jpeg"))
+			addImageToFlipper(Constant.IMAGE_VIEW_PERIODIK_PATH + "/" + files[i]);
 		}
+		Log.i("buildViewFlipper", "run");
 	}
 	
 	protected void addImageToFlipper(String path){
@@ -89,7 +101,9 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 		if(drawable!=null){
 			imageView.setBackgroundDrawable(drawable);
 			mViewFlipper.addView(imageView);
+			periodikViews.add(imageView);
 		} else Log.i("drawable", "null");
+		Log.i("addImage", "run");
 	}
 
 	@Override

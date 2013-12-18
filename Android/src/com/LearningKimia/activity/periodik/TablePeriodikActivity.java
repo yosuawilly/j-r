@@ -1,10 +1,12 @@
 package com.LearningKimia.activity.periodik;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.LearningKimia.R;
+import com.LearningKimia.activity.ShowDetailPeriodikActivity;
 import com.LearningKimia.activity.base.BaseActivity;
 import com.socratica.mobile.ImageMap;
 import com.socratica.mobile.ImageMapListener;
@@ -35,7 +37,11 @@ public class TablePeriodikActivity extends BaseActivity implements ImageMapListe
 	    int[] arrayOfInt = new int[1];
 	    arrayOfInt[0] = this.map.getDataId(paramInt);
 	    Log.i("area", String.valueOf(arrayOfInt[0]));
-	    
+	    if(arrayOfInt[0]>0){
+	    	Intent intent = new Intent(this, ShowDetailPeriodikActivity.class);
+	    	intent.putExtra("index", arrayOfInt[0]);
+	    	startActivity(intent);
+	    }
 //	    SessionData localSessionData = createSessionData(arrayOfInt);
 //	    Intent localIntent = new Intent(Utils.getAction(this, Action.SHOW_DATA));
 //	    localIntent.putExtra("data", localSessionData);

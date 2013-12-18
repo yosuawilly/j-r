@@ -26,12 +26,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
                 android:text="Nama" />
 
             <TextView
                 android:id="@+id/menuTextBottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:text="00000000000" />
 
         </LinearLayout>
