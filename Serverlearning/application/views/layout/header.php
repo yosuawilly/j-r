@@ -48,7 +48,7 @@
                             <div class="panel">
                                 <ul>
                                     <li><?php echo anchor('home', 'Home', array('title'=>'Home', 'class'=>(isset($home)) ? 'active' : "" )); ?></li>
-                                    <li><?php echo anchor('auth/changepassword', 'Change Password', array('title'=>'Change Password')); ?></li>
+                                    <!--<li><?php //echo anchor('auth/changepassword', 'Change Password', array('title'=>'Change Password')); ?></li>-->
                                     <li><?php echo anchor('auth/logout', 'Logout', array('title'=>'Logout')); ?></li>
                                 </ul>
                             </div>
