@@ -26,7 +26,8 @@ class Home extends CI_Controller{
         $this->load->library('form_validation');
         $this->load->library('table');
         $this->load->library('pagination');
-        $this->load->library('mpdf');
+//        $this->load->library('mpdf');
+        $this->load->library('html2pdf');
         $this->load->helper('url');
         
         $this->load->model('bab_model');
@@ -298,8 +299,15 @@ class Home extends CI_Controller{
                 } else {
                     $result = $this->materi_model->add($data);
                     if(!$result['error']) {
-                        $this->mpdf->WriteHTML($isi_materi);
-                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
+                        $this->html2pdf->folder('materi/');
+                        $this->html2pdf->filename($judul.'.pdf');
+                        $this->html2pdf->paper('a4', 'portrait');
+                        $this->html2pdf->html($isi_materi);
+                        if($this->html2pdf->create('save')) {
+                            redirect ('home/materi', 'refresh');
+                        } else 
+//                        $this->mpdf->WriteHTML($isi_materi);
+//                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
                         redirect ('home/materi', 'refresh');
                     }
                     else {
@@ -318,8 +326,15 @@ class Home extends CI_Controller{
                 } else {
                     $sukses = $this->materi_model->update($id, $data);
                     if($sukses) {
-                        $this->mpdf->WriteHTML($isi_materi);
-                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
+                        $this->html2pdf->folder('materi/');
+                        $this->html2pdf->filename($judul.'.pdf');
+                        $this->html2pdf->paper('a4', 'portrait');
+                        $this->html2pdf->html($isi_materi);
+                        if($this->html2pdf->create('save')) {
+                            redirect ('home/materi', 'refresh');
+                        } else 
+//                        $this->mpdf->WriteHTML($isi_materi);
+//                        $this->mpdf->Output('materi/'.$judul.'.pdf','F');
                         redirect ('home/materi', 'refresh');
                     }
                 }
