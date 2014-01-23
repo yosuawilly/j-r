@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+        <EditText
+            android:id="@+id/EditTextPath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Path file to upload"
+            android:background="@drawable/search_edit_text_bg_default"
+            android:padding="7dp"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:text="" />
+        <Button
+            android:id="@+id/btnBrowse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btnsearch"
+            android:text="" />
+    </LinearLayout>
+    
+    <Button 
+        android:id="@+id/btnUpload" 
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:background="@drawable/button_default"
+        android:padding="0dp"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="20sp"
+        android:textColor="@color/default_color_button_selector"
+        android:text="Upload"/>
+
+</LinearLayout>

@@ -95,6 +95,12 @@
         <activity android:name="com.LearningKimia.activity.ShowDetailPeriodikActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
+        <activity android:name="com.LearningKimia.activity.tugas.TugasUploadActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+        <activity android:name="com.LearningKimia.activity.FileChooserActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
     </application>
 
 </manifest>

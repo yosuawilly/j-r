@@ -3,7 +3,11 @@ package com.LearningKimia.activity.tugas;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -64,6 +68,26 @@ public class TugasShowActivity extends BaseActivity implements Functional{
 			((TextView) row.findViewById(R.id.TvIsiSoal)).setText(soal.getIsi_soal());
 			linearTugasMain.addView(row);
 			numRow++;
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.upload_tugas_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		switch (item.getItemId()) {
+		case R.id.menu_upload:
+			intent = new Intent(this, TugasUploadActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
