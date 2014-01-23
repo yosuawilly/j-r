@@ -110,6 +110,22 @@ class Rest extends CI_Controller {
             exit;
         }
     }
+    
+    public function uploadTugas() {
+        $url_tugas = base_url().'upload_tugas';
+        
+        if($_SERVER['REQUEST_METHOD']=='POST') {
+            
+            $file = $_FILES['uploaded_file'];
+            $url_tugas = $url_tugas . '/' .basename($file['name']);
+            
+            if(move_uploaded_file($file['tmp_name'], $url_tugas)){
+                echo 'File Upload Completed';
+            } else echo 'File Not Uploaded';
+        } else {
+            echo "Method Not Allowed";
+        }
+    }
 
     public function get_soal($id_tugas) {
         $row = $this->tugas_model->get_by_id($id_tugas);
