@@ -46,7 +46,16 @@ public class FileArrayAdapter extends ArrayAdapter<Option>{
                        
                        if(o.getData().equalsIgnoreCase("Folder") || o.getData().equalsIgnoreCase("Parent Directory"))
                     	   icon.setBackgroundResource(R.drawable.folder);
-                       else icon.setBackgroundResource(R.drawable.audio_icon);
+                       else if(o.getName().toLowerCase().contains(".mp3")) {
+                    	   icon.setBackgroundResource(R.drawable.audio_icon);
+                       }
+                       else if(o.getName().toLowerCase().contains(".txt")) {
+                    	   icon.setBackgroundResource(R.drawable.file_txt);
+                       }
+                       else if(o.getName().toLowerCase().contains(".pdf")) {
+                    	   icon.setBackgroundResource(R.drawable.file_pdf);
+                       }
+                       else icon.setBackgroundResource(R.drawable.unknown_file);
                        if(t1!=null)
                        	t1.setText(o.getName());
                        if(t2!=null)

@@ -6,14 +6,12 @@ import com.LearningKimia.R;
 import com.LearningKimia.activity.base.BaseActivity;
 import com.LearningKimia.database.DatabaseHelper;
 import com.LearningKimia.database.KatalogDbHelper;
-import com.LearningKimia.global.GlobalVar;
 import com.LearningKimia.model.Katalog;
 import com.LearningKimia.util.Utility;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -194,35 +192,9 @@ public class CariGlossarium extends BaseActivity implements OnClickListener, Tex
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.tambahKatalog:
 			tambahUpdateKatalog(true, "", "");
-			return true;
-		case R.id.mainMenu:
-			intent = new Intent(this, LearningKimiaActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intent);
-			this.finish();
-			return true;
-		case R.id.logoutMenu:
-			new AlertDialog.Builder(this)
-			.setIcon(android.R.drawable.ic_dialog_alert)
-	        .setTitle("Keluar")
-	        .setMessage("Apakah anda yakin akan keluar dari aplikasi E-Learning?")
-	        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent intent = new Intent(CariGlossarium.this, LearningKimiaActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("EXIT", true);
-					GlobalVar.getInstance().clearAllObject();
-					startActivity(intent);
-					CariGlossarium.this.finish();
-				}
-			})
-			.setNegativeButton("Tidak", null).show();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

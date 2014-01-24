@@ -2,6 +2,7 @@ package com.LearningKimia.activity.tugas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 		btnNext.setVisibility(View.INVISIBLE);
 		
 		editTextPath = (EditText) findViewById(R.id.EditTextPath);
+		editTextPath.setInputType(InputType.TYPE_NULL);
 		btnBrowse = (Button) findViewById(R.id.btnBrowse);
 		btnUpload = (Button) findViewById(R.id.btnUpload);
 	}
