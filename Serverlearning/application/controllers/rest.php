@@ -112,7 +112,9 @@ class Rest extends CI_Controller {
     }
     
     public function uploadTugas() {
-        $url_tugas = base_url().'upload_tugas';
+        $url_tugas = 'upload_tugas';
+        
+//        echo $_POST['nama'];
         
         if($_SERVER['REQUEST_METHOD']=='POST') {
             
