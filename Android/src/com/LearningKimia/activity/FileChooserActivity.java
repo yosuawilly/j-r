@@ -24,7 +24,6 @@ public class FileChooserActivity extends ListActivity{
 	private File currentDir;
     private FileArrayAdapter adapter;
     private final String FTYPE = ".mp3";
-//    private final String FTYPE = ".prop";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class FileChooserActivity extends ListActivity{
 					dir.add(new Option(ff.getName(),"Folder",ff.getAbsolutePath()));
 				else
 				{
-					if(!ff.getName().toLowerCase().contains(FTYPE))continue;
+//					if(!ff.getName().toLowerCase().contains(FTYPE))continue;
 					fls.add(new Option(ff.getName(),"File Size: "+ff.length(),ff.getAbsolutePath()));
 				}
 			 }
@@ -84,6 +83,8 @@ public class FileChooserActivity extends ListActivity{
 		Intent intent = new Intent();
 		intent.putExtra("option", new Option());
 		setResult(NO_RESULT, intent);
+		
+		finish();
 //		Intent intent = new Intent(this, SettingActivity.class);
 //		Option o = new Option("", "", "");
 //		intent.putExtra("nama", o.getName());
@@ -99,6 +100,8 @@ public class FileChooserActivity extends ListActivity{
 		Intent intent = new Intent();
 		intent.putExtra("option", o);
 		setResult(RESULT_SUKSES, intent);
+		
+		finish();
 //		Intent intent = new Intent(this, SettingActivity.class);
 //		intent.putExtra("nama", o.getName());
 //		intent.putExtra("data", o.getData());

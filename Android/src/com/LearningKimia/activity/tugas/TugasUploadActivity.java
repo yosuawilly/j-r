@@ -2,6 +2,7 @@ package com.LearningKimia.activity.tugas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,12 +10,14 @@ import android.widget.EditText;
 import com.LearningKimia.R;
 import com.LearningKimia.activity.FileChooserActivity;
 import com.LearningKimia.activity.base.BaseMyActivity;
+import com.LearningKimia.listener.DialogListener;
 import com.LearningKimia.model.Option;
-import com.LearningKimia.restfull.UploadFileTugasTask;
 import com.LearningKimia.restfull.UploadFileTugasTask.UploadListener;
+import com.LearningKimia.restfull.UploadFileTugasTask2;
+import com.LearningKimia.util.Constant;
 import com.LearningKimia.util.Utility;
 
-public class TugasUploadActivity extends BaseMyActivity implements UploadListener<Object>{
+public class TugasUploadActivity extends BaseMyActivity implements UploadListener<Object>, DialogListener{
 	private final int BROWSE_FILE = 11;
 	
 	protected EditText editTextPath;
@@ -52,20 +55,20 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == BROWSE_FILE){
 			if(data!=null){
 				this.option = (Option) data.getSerializableExtra("option");
 				editTextPath.setText(option.getPath());
 			}
 		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.button_back:
-			
+			onBackPressed();
 			break;
 		case R.id.btnBrowse:
 			Intent intent = new Intent(this, FileChooserActivity.class);
@@ -73,9 +76,9 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 			break;
 		case R.id.btnUpload:
 			String filePath = editTextPath.getText().toString();
-			if(filePath!=null){
-				UploadFileTugasTask fileTugasTask = new UploadFileTugasTask(this, this);
-				fileTugasTask.execute(filePath);
+			if(filePath!=null && !filePath.equals("")){
+				UploadFileTugasTask2 fileTugasTask = new UploadFileTugasTask2(this, this);
+				fileTugasTask.execute(filePath, "nama=yosua");
 			} else {
 				Utility.showErrorMessage(this, "Anda belum memilih file");
 			}
@@ -84,6 +87,17 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 			break;
 		}
 		super.onClick(v);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		setResult(RESULT_CANCELED);
+		finish();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return false;
 	}
 
 	@Override
@@ -103,8 +117,16 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 
 	@Override
 	public void onUpload(Object... params) {
-		// TODO Auto-generated method stub
-		
+		if(Constant.UPLOAD_SUKSES.equals( (String)params[0] )) {
+			Utility.showMessage(this, "OK", (String) params[0], this);
+		}
+		else Utility.showMessage(this, "OK", (String) params[0]);
+	}
+
+	@Override
+	public void onDialogClose() {
+		setResult(RESULT_OK);
+		finish();
 	}
 
 }

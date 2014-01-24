@@ -27,5 +27,7 @@ public final class Constant {
 	public static final String REST_METHOD = "rest_method";
 	public static final String REST_RESULT = "rest_result";
 	public static final String REST_CONN_TIMEOUT = "conn_timeout";
+	
+	public static final String UPLOAD_SUKSES = "File Upload Completed";
 
 }

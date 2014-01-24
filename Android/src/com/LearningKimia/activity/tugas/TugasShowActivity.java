@@ -19,6 +19,8 @@ import com.LearningKimia.model.Tugas;
 import com.LearningKimia.util.Functional;
 
 public class TugasShowActivity extends BaseActivity implements Functional{
+	public static final int REQUEST_UPLOAD = 0;
+	
 	protected Tugas tugasSelected;
 	protected List<SoalTugas> soalTugas;
 	protected DatabaseHelper dbHelper;
@@ -84,7 +86,7 @@ public class TugasShowActivity extends BaseActivity implements Functional{
 		switch (item.getItemId()) {
 		case R.id.menu_upload:
 			intent = new Intent(this, TugasUploadActivity.class);
-			startActivity(intent);
+			startActivityForResult(intent, REQUEST_UPLOAD);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

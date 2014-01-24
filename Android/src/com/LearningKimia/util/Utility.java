@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.LearningKimia.R;
+import com.LearningKimia.listener.DialogListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +34,17 @@ public class Utility {
 			@Override
 			public void onClick(DialogInterface d, int i) {
 				d.dismiss();
+			}
+		}).create().show();
+	}
+	
+	public static void showMessage(Context context, String textButton, String pesan, final DialogListener listener){
+		new AlertDialog.Builder(context).setMessage(pesan)
+		.setTitle("Information").setPositiveButton(textButton, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface d, int i) {
+				d.dismiss();
+				listener.onDialogClose();
 			}
 		}).create().show();
 	}

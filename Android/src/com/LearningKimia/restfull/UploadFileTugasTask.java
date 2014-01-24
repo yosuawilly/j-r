@@ -1,8 +1,12 @@
 package com.LearningKimia.restfull;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,19 +111,35 @@ public class UploadFileTugasTask extends AsyncTask<String, Object, Object>{
               // send multipart form data necesssary after file data...
               dos.writeBytes(lineEnd);
               dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+              
+//              String paramku = "nama=yosua";
+//              dos.writeBytes("Content-Disposition: form-data; name=\"chunk\"" + lineEnd);
+//              dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
+//              dos.writeBytes("Content-Length: " + paramku.length() + lineEnd);
+//              dos.writeBytes(lineEnd);
+//              dos.writeBytes(paramku + lineEnd);
+//              dos.writeBytes(twoHyphens + boundary + lineEnd);
      
               // Responses from the server (code and message)
               serverResponseCode = conn.getResponseCode();
               String serverResponseMessage = conn.getResponseMessage();
-                
-              Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
+              
+              InputStream in = new BufferedInputStream(conn.getInputStream());
+              BufferedReader br = new BufferedReader(new InputStreamReader(in));
                
               if(serverResponseCode == 200){
-//            	  result = "File Upload Completed.";
-            	  result = serverResponseMessage;
+            	  String line = ""; result = "";
+            	  while ((line = br.readLine()) != null) {
+            		  result += line;
+            	  }
+//            	  result = br.readLine();
               }    
+              
+              Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode + ": " + result);
                
               //close the streams //
+              in.close();
+              br.close();
               fileInputStream.close();
               dos.flush();
               dos.close();
