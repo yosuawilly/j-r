@@ -34,6 +34,7 @@ class Home extends CI_Controller{
         $this->load->model('materi_model');
         $this->load->model('siswa_model');
         $this->load->model('tugas_model');
+        $this->load->model('upload_tugas_model');
         
         date_default_timezone_set('Asia/Jakarta');
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
@@ -201,10 +202,13 @@ class Home extends CI_Controller{
             <i class="icon icon-pencil"></i> Update</a>';
             $button_update_delete .= '<a href="'.base_url().'home/deletemateri/'.$row['id_materi'].'" class="btn btn-danger" onclick="return deleteData(this,\''.$row['id_materi'].'\');">
             <i class="icon icon-trash"></i> Delete</a></div>';
+            $isi_materi = $row['isi_materi'];
+            $isi_materi = (strlen($isi_materi)>1500) ? substr($isi_materi, 0, 1500) : $isi_materi;
             $this->table->add_row(
                 array('data'=>$row['id_materi'], 'class'=>'center'),
                 array('data'=>$row['judul'], 'class'=>'center'),
-                array('data'=>$row['isi_materi'], 'class'=>'center'),
+                array('data'=>$isi_materi, 'class'=>'center'),
+//                array('data'=>$row['isi_materi'], 'class'=>'center'),
                 array('data'=>$row['label_bab'], 'class'=>'center'),
                 array('data'=>$row['semester'], 'class'=>'center'),
                 $button_update_delete
@@ -600,6 +604,37 @@ class Home extends CI_Controller{
             default:
                 break;
         }
+    }
+    
+    public function dataUploadTugas($id_tugas=NULL) {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        
+        $this->user_data['title'] = "Data Upload Tugas - E-Learning Server";
+        $this->user_data['upload_tugas'] = true;
+        
+        $result_tugas = $this->tugas_model->get();
+        $result = ($id_tugas!=NULL) ? $this->upload_tugas_model->get_upload_tugas_by_id_tugas($id_tugas) : 
+            $this->upload_tugas_model->get_all_upload_tugas();
+
+        $this->table->set_template($this->tmpl);
+        $this->table->set_heading('ID', 'Nama Siswa', 'Judul Tugas', 'Nama File', 'Tanggal Upload');
+        
+        foreach($result['rows'] as $row){
+            $link_file = '<a href="'.base_url().'upload_tugas/'.$row['nama_file'].'" onclick="return true;">'.$row['nama_file'].'</a>';
+            $this->table->add_row(
+                array('data'=>$row['id_upload'], 'class'=>'center'),
+                array('data'=>$row['nama'], 'class'=>'center'),
+                array('data'=>$row['judul_tugas'], 'class'=>'center'),
+                $link_file,
+//                array('data'=>$row['nama_file'], 'class'=>'center'),
+                array('data'=>$row['tgl_upload'], 'class'=>'center')
+            );
+        }
+        $this->user_data['table'] = $this->table->generate();
+        $this->user_data['data_tugas'] = $result_tugas['rows'];
+        $this->user_data['id_tugas'] = $id_tugas;
+        
+        $this->load->view('data_upload_tugas', $this->user_data);
     }
 
 }

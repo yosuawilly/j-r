@@ -44,3 +44,11 @@ id_table_version serial not null primary key,
 nama_table varchar(20) not null,
 "version" varchar(10) not null
 );
+
+create table upload_tugas(
+id_upload serial not null primary key,
+id_siswa varchar(10) references siswa on update cascade on delete cascade,
+id_tugas int references tugas on update cascade on delete cascade,
+nama_file varchar(50) not null,
+tgl_upload date not null
+);

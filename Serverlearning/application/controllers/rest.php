@@ -11,6 +11,7 @@ class Rest extends CI_Controller {
         $this->load->model('siswa_model');
         $this->load->model('tugas_model');
         $this->load->model('version_model');
+        $this->load->model('upload_tugas_model');
     }
     
     public function login($username, $password) {
@@ -114,15 +115,38 @@ class Rest extends CI_Controller {
     public function uploadTugas() {
         $url_tugas = 'upload_tugas';
         
-//        echo $_POST['nama'];
+//        echo $_POST['id_siswa'].' '.$_POST['id_tugas'];
         
         if($_SERVER['REQUEST_METHOD']=='POST') {
-            
+            $id_siswa = $_POST['id_siswa'];
+            $id_tugas = $_POST['id_tugas'];
             $file = $_FILES['uploaded_file'];
-            $url_tugas = $url_tugas . '/' .basename($file['name']);
+            
+//            echo end(explode('.', $file['name'])); exit();
+            
+            if($id_siswa==NULL || $id_tugas==NULL || $file==NULL){
+                echo 'Parameter tidak lengkap'; exit();
+            }
+            
+            $extention = end(explode('.', $file['name']));
+            $newFileName = $id_siswa.'_'.$id_tugas."_.".$extention;
+            $url_tugas = $url_tugas . '/' .$newFileName;
+//            $url_tugas = $url_tugas . '/' .basename($file['name']);
+            if(file_exists($url_tugas)){
+                echo 'Anda sudah mengupload tugas sebelumnya'; exit();
+            }
             
             if(move_uploaded_file($file['tmp_name'], $url_tugas)){
-                echo 'File Upload Completed';
+                $data = array('id_siswa'=>$id_siswa, 'id_tugas'=>$id_tugas, 'nama_file'=>$newFileName, 'tgl_upload'=>date("Y-m-d H:i:s"));
+                
+                $result = $this->upload_tugas_model->add($data);
+                if(!$result['error']) {
+                    echo 'File Upload Completed';
+                }
+                else {
+                    unlink($url_tugas);
+                    echo $result['error'];
+                }
             } else echo 'File Not Uploaded';
         } else {
             echo "Method Not Allowed";
