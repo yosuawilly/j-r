@@ -86,6 +86,7 @@ public class TugasShowActivity extends BaseActivity implements Functional{
 		switch (item.getItemId()) {
 		case R.id.menu_upload:
 			intent = new Intent(this, TugasUploadActivity.class);
+			intent.putExtra("tugasSelected", tugasSelected);
 			startActivityForResult(intent, REQUEST_UPLOAD);
 			return true;
 		default:

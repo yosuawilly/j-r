@@ -11,8 +11,10 @@ import android.widget.EditText;
 import com.LearningKimia.R;
 import com.LearningKimia.activity.FileChooserActivity;
 import com.LearningKimia.activity.base.BaseMyActivity;
+import com.LearningKimia.global.GlobalVar;
 import com.LearningKimia.listener.DialogListener;
 import com.LearningKimia.model.Option;
+import com.LearningKimia.model.Tugas;
 import com.LearningKimia.restfull.UploadFileTugasTask.UploadListener;
 import com.LearningKimia.restfull.UploadFileTugasTask2;
 import com.LearningKimia.util.Constant;
@@ -20,6 +22,8 @@ import com.LearningKimia.util.Utility;
 
 public class TugasUploadActivity extends BaseMyActivity implements UploadListener<Object>, DialogListener{
 	private final int BROWSE_FILE = 11;
+	
+	protected Tugas tugasSelected;
 	
 	protected EditText editTextPath;
 	protected Button btnBack, btnNext;
@@ -31,6 +35,14 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 	protected void onCreate(Bundle savedInstanceState) {
 		setLayoutMode(true, MyLayout.LINEARLAYOUT);
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	public void initBundle() {
+		super.initBundle();
+		if(getIntent().getExtras() != null){
+			tugasSelected = (Tugas) getIntent().getExtras().getSerializable("tugasSelected");
+		}
 	}
 	
 	@Override
@@ -80,7 +92,10 @@ public class TugasUploadActivity extends BaseMyActivity implements UploadListene
 			String filePath = editTextPath.getText().toString();
 			if(filePath!=null && !filePath.equals("")){
 				UploadFileTugasTask2 fileTugasTask = new UploadFileTugasTask2(this, this);
-				fileTugasTask.execute(filePath, "nama=yosua");
+				if(tugasSelected!=null)
+				fileTugasTask.execute(filePath, "id_siswa="+GlobalVar.getInstance().getSiswa().getIdSiswa()+"&id_tugas="+tugasSelected.getId_tugas());
+				
+				else Utility.showErrorMessage(this, "Tidak ada tugas yang dipilih");
 			} else {
 				Utility.showErrorMessage(this, "Anda belum memilih file");
 			}

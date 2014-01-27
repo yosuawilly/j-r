@@ -20,7 +20,8 @@
             android:padding="7dp"
             android:singleLine="true"
             android:layout_weight="1"
-            android:text="" />
+            android:text=""
+            android:cursorVisible="false" />
         <Button
             android:id="@+id/btnBrowse"
             android:layout_width="wrap_content"
