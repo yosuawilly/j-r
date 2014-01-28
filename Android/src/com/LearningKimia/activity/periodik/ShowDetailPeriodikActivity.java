@@ -1,4 +1,4 @@
-package com.LearningKimia.activity;
+package com.LearningKimia.activity.periodik;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.ViewFlipper;
 
 import com.LearningKimia.R;
@@ -25,7 +25,8 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 	protected static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	protected ViewFlipper mViewFlipper;
 	private final GestureDetector detector = new GestureDetector(new SwipeGestureDetector());
-	protected List<ImageView> periodikViews;
+//	protected List<ImageView> periodikViews;
+	protected List<ScrollView> periodikViews;
 	protected int indexViewToView = -1;
 	
 	@Override
@@ -85,7 +86,8 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
     }
 	
 	protected void buildViewFliper(){
-		periodikViews = new ArrayList<ImageView>();
+//		periodikViews = new ArrayList<ImageView>();
+		periodikViews = new ArrayList<ScrollView>();
 		String[]files = Utility.getAllFilesInAsset(this, Constant.IMAGE_VIEW_PERIODIK_PATH);
 		for(int i=0; i<files.length; i++){
 			Log.i("files", files[i]);
@@ -96,12 +98,14 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 	}
 	
 	protected void addImageToFlipper(String path){
-		ImageView imageView = (ImageView) getLayoutInflater().inflate(R.layout.image_periodik, null);
+//		ImageView imageView = (ImageView) getLayoutInflater().inflate(R.layout.image_periodik, null);
+		ScrollView scrollView = (ScrollView) getLayoutInflater().inflate(R.layout.image_periodik, null);
 		Drawable drawable = Utility.getDrawableFromAsset(this, path);
 		if(drawable!=null){
-			imageView.setBackgroundDrawable(drawable);
-			mViewFlipper.addView(imageView);
-			periodikViews.add(imageView);
+//			imageView.setBackgroundDrawable(drawable);
+			scrollView.findViewById(R.id.img_periodik).setBackgroundDrawable(drawable);
+			mViewFlipper.addView(scrollView);
+			periodikViews.add(scrollView);
 		} else Log.i("drawable", "null");
 		Log.i("addImage", "run");
 	}
@@ -121,6 +125,12 @@ public class ShowDetailPeriodikActivity extends BaseMyActivity{
 	public int getIdViewToInflate() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		detector.onTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 
 }

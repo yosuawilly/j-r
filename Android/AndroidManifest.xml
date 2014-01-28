@@ -92,7 +92,7 @@
         <activity android:name="com.LearningKimia.activity.latihan.periodik.LatihanPeriodikActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
-        <activity android:name="com.LearningKimia.activity.ShowDetailPeriodikActivity"
+        <activity android:name="com.LearningKimia.activity.periodik.ShowDetailPeriodikActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity android:name="com.LearningKimia.activity.tugas.TugasUploadActivity"

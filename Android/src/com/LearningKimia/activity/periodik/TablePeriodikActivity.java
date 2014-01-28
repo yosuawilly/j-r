@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.LearningKimia.R;
-import com.LearningKimia.activity.ShowDetailPeriodikActivity;
 import com.LearningKimia.activity.base.BaseActivity;
 import com.socratica.mobile.ImageMap;
 import com.socratica.mobile.ImageMapListener;
