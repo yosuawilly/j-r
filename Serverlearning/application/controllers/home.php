@@ -204,19 +204,46 @@ class Home extends CI_Controller{
             <i class="icon icon-trash"></i> Delete</a></div>';
             $isi_materi = $row['isi_materi'];
             $isi_materi = (strlen($isi_materi)>1500) ? substr($isi_materi, 0, 1500) : $isi_materi;
+            $isi_materi = '<div style="width: 200px; height: auto; overflow: auto">' . $isi_materi . '</div>';
+            
+            $attributes = array(
+                'class'     =>  'btn btn-warning',
+                'width'     =>  '800',
+                'height'    =>  '500',
+                'screenx'   =>  '\'+((parseInt(screen.width) - 800)/2)+\'',
+                'screeny'   =>  '\'+((parseInt(screen.height) - 500)/3)+\''
+                );
+            $popUp = anchor_popup('home/showMateri/'.$row['id_materi'], 'Show Materi', $attributes);
+            
             $this->table->add_row(
                 array('data'=>$row['id_materi'], 'class'=>'center'),
                 array('data'=>$row['judul'], 'class'=>'center'),
-                array('data'=>$isi_materi, 'class'=>'center'),
+                $popUp,
+//                array('data'=>$isi_materi, 'style'=>'width:200px;max-width:200px;'),
 //                array('data'=>$row['isi_materi'], 'class'=>'center'),
                 array('data'=>$row['label_bab'], 'class'=>'center'),
                 array('data'=>$row['semester'], 'class'=>'center'),
-                $button_update_delete
+                array('data'=>$button_update_delete, 'style'=>'width:164px;')
             );
         }
         $this->user_data['table'] = $this->table->generate();
         
         $this->load->view('materi', $this->user_data);
+    }
+    
+    public function showMateri($id_materi=NULL) {
+        if($id_materi == NULL) {
+            show_error ('Materi not found'); exit();
+        }
+        
+        $row = $this->materi_model->get_by_id($id_materi);
+        if(!$row) {
+            show_error ('Materi not found'); exit();
+        }
+        
+        $this->user_data['title'] = $row->judul;
+        $this->user_data['isi_materi'] = $row->isi_materi;
+        $this->load->view('showMateri', $this->user_data);
     }
     
     public function createmateri() {

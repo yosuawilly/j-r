@@ -105,7 +105,8 @@ class Rest extends CI_Controller {
             $status['done'] = 1;
             $status['width'] = $size[0];
             $rp = realpath($path);
-            $status['url'] =  NICUPLOAD_URI ."/".$id;
+//            $status['url'] =  NICUPLOAD_URI ."/".$id;
+            $status['url'] =  NICUPLOAD_PATH ."/".$id;
 
             $this->upload->nicupload_output($status, false);
             exit;
