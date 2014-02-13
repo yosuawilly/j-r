@@ -77,6 +77,9 @@ public class BaseActivity extends Activity implements OnClickListener{
 			startActivity(intent);
 			this.finish();
 			return true;
+		case R.id.syncMenu:
+			
+			return true;
 		case R.id.logoutMenu:
 			new AlertDialog.Builder(this)
 			.setIcon(android.R.drawable.ic_dialog_alert)
