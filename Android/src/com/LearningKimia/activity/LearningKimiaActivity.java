@@ -10,6 +10,7 @@ import com.LearningKimia.activity.materi.MateriMenuActivity;
 import com.LearningKimia.activity.periodik.TablePeriodikActivity;
 import com.LearningKimia.activity.tugas.TugasSelectionActivity;
 import com.LearningKimia.global.GlobalVar;
+import com.LearningKimia.util.Constant;
 import com.LearningKimia.util.Functional;
 
 import android.app.AlertDialog;
@@ -42,6 +43,7 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
 
     public boolean onCreateOptionsMenu(Menu menu){
     	this.menu = menu;
+    	menu.add(1, Constant.SYNC_DATA, 1, "Sync").setIcon(android.R.drawable.ic_menu_search);
     	menu.add(0, 1, 0, "Help").setIcon(android.R.drawable.ic_menu_help);
         menu.add(0, 2, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
     	return true;
@@ -61,7 +63,7 @@ public class LearningKimiaActivity extends BaseActivity implements Functional{
     		dialog1.show();
             return true;
         }
-    	return false;
+    	return super.onOptionsItemSelected(Item);
     }
 
 	@Override

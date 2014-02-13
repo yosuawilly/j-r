@@ -30,5 +30,7 @@ public final class Constant {
 	public static final String REST_CONN_TIMEOUT = "conn_timeout";
 	
 	public static final String UPLOAD_SUKSES = "File Upload Completed";
+	
+	public static final int SYNC_DATA = 11;
 
 }

@@ -94,7 +94,7 @@ public class BaseActivity extends Activity implements OnClickListener, AsyncTask
 			startActivity(intent);
 			this.finish();
 			return true;
-		case R.id.syncMenu:
+		case Constant.SYNC_DATA:
 			CallWebServiceTask task = new CallWebServiceTask(this, this, "Getting Table Version...");
 			task.execute(Constant.GET_TABLE_VERSION_URL, Constant.REST_GET);
 			
