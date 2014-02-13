@@ -27,21 +27,21 @@ import android.widget.Toast;
 
 public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 	private final String TAG = this.getClass().getCanonicalName();
-	private AsyncTaskCompleteListener<Object> callback;
-	private Context context;
-	private Handler handler;
-	private ArrayList<String> tableToUpdate;
-	private String username;
-	private String password;
+	protected AsyncTaskCompleteListener<Object> callback;
+	protected Context context;
+	protected Handler handler;
+	protected ArrayList<String> tableToUpdate;
+	protected String username;
+	protected String password;
 	
 	/*For download task*/
 	private static final int TIMEOUT = 120;
-	private final String ERROR = "INVALID_URL";
-	private final String FILE_CORRUPT = "FILE_CORRUPT";
-	private final String SUCCESS = "SUCCESS";
-	private final String CANCEL = "CANCEL";
+	protected final String ERROR = "INVALID_URL";
+	protected final String FILE_CORRUPT = "FILE_CORRUPT";
+	protected final String SUCCESS = "SUCCESS";
+	protected final String CANCEL = "CANCEL";
 	
-	private DatabaseHelper dbHelper;
+	protected DatabaseHelper dbHelper;
 	
 	public CallUpdateDataTask(AsyncTaskCompleteListener<Object> callback, Context context, Handler handler, String username, String password, ArrayList<String> tableToUpdate) {
 		this.callback = callback;
@@ -93,7 +93,7 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 		return result;
 	}
 	
-	private String downloadUpdateMateri(String judul){
+	protected String downloadUpdateMateri(String judul){
 		String PATH = (Utility.isSDCardExist())?Constant.MATERI_PATH_SD_CARD:Constant.MATERI_PATH;
 		File file = new File(PATH);
 		file.delete();
@@ -183,13 +183,13 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 	    }
 	}
 	
-	private void sendProgresMessage(String pesan){
+	protected void sendProgresMessage(String pesan){
 		Message message = handler.obtainMessage();
 		message.obj = "- "+pesan+"...";
 		handler.sendMessage(message);
 	}
 	
-	private String getNameOfTable(String table){
+	protected String getNameOfTable(String table){
 		if(table.equals("t_bab")) return "Bab";
 		else if(table.equals("t_materi")) return "Materi";
 		else if(table.equals("t_tugas")) return "Tugas";

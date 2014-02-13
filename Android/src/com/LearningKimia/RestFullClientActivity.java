@@ -2,10 +2,8 @@ package com.LearningKimia;
 
 import java.util.ArrayList;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.LearningKimia.restfull.AsyncTaskCompleteListener;
+import com.LearningKimia.restfull.CallSynchronizedTask;
 import com.LearningKimia.restfull.CallUpdateDataTask;
 import com.LearningKimia.util.Constant;
 
@@ -42,8 +40,15 @@ public class RestFullClientActivity extends Activity implements AsyncTaskComplet
 		progressText = (TextView) findViewById(R.id.progressText);
 		progressText.setText(" Connect to server...");
 		
-		CallUpdateDataTask updateDataTask = new CallUpdateDataTask(this, this, handler, username, password, tableToUpdate);
-		updateDataTask.execute((Object)null);
+		if(username==null && password==null) {
+			CallSynchronizedTask synchronizedTask = new CallSynchronizedTask(this, this, handler, tableToUpdate);
+			synchronizedTask.execute((Object)null);
+		}
+		else 
+		{
+			CallUpdateDataTask updateDataTask = new CallUpdateDataTask(this, this, handler, username, password, tableToUpdate);
+			updateDataTask.execute((Object)null);
+		}
 	}
 	
 	final Handler handler = new Handler() {
