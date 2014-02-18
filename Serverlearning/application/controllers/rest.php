@@ -12,6 +12,7 @@ class Rest extends CI_Controller {
         $this->load->model('tugas_model');
         $this->load->model('version_model');
         $this->load->model('upload_tugas_model');
+        $this->load->model('quiz_model');
     }
     
     public function login($username, $password) {
@@ -159,6 +160,15 @@ class Rest extends CI_Controller {
         $row_soal = $this->tugas_model->get_soal($id_tugas);
 
         $result = array('judul_tugas'=>$row->judul_tugas, 'soal'=>$row_soal['rows']);
+        echo json_encode($result);
+    }
+    
+    public function get_jawaban($id_quiz) {
+        $row = $this->quiz_model->get_by_id($id_quiz);
+        $row_jawaban = $this->quiz_model->get_jawaban($id_quiz);
+
+//        $result = array('judul_tugas'=>$row->judul_tugas, 'soal'=>$row_soal['rows']);
+        $result = array('judul'=>'Jawaban', 'jawaban'=>$row_jawaban['rows']);
         echo json_encode($result);
     }
 

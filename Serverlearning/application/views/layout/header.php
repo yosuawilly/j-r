@@ -43,6 +43,7 @@
                                     <li><?php echo anchor('home/tugas', 'Data Tugas', array('title'=>'Data Tugas', 'class'=>(isset($tugas)) ? 'active' : "" )); ?></li>
                                     <li><?php echo anchor('home/siswa', 'Data Siswa', array('title'=>'Data Siswa', 'class'=>(isset($siswa)) ? 'active' : "" )); ?></li>
                                     <li><?php echo anchor('home/dataUploadTugas', 'Data Upload Tugas', array('title'=>'Data Upload Tugas', 'class'=>(isset($upload_tugas)) ? 'active' : "" )); ?></li>
+                                    <li><?php echo anchor('home/quiz', 'Data Quiz', array('title'=>'Data Quiz', 'class'=>(isset($quiz)) ? 'active' : "" )); ?></li>
                                 </ul>
                             </div>
                             <h3>Admin<span class="arrowclose"></span></h3>

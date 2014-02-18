@@ -35,6 +35,7 @@ class Home extends CI_Controller{
         $this->load->model('siswa_model');
         $this->load->model('tugas_model');
         $this->load->model('upload_tugas_model');
+        $this->load->model('quiz_model');
         
         date_default_timezone_set('Asia/Jakarta');
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
@@ -662,6 +663,38 @@ class Home extends CI_Controller{
         $this->user_data['id_tugas'] = $id_tugas;
         
         $this->load->view('data_upload_tugas', $this->user_data);
+    }
+    
+    public function quiz(){
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        
+        $this->user_data['title'] = "Data Quiz - E-Learning Server";
+        $this->user_data['quiz'] = true;
+
+        $result = $this->quiz_model->get();
+
+        $this->table->set_template($this->tmpl);
+        $this->table->set_heading('ID Quiz', 'Jawaban', 'Soal', 'Action');
+
+        foreach($result['rows'] as $row){
+            $button_update_delete = '<div style="float:right;"><a style="margin-right:5px;" href="'.base_url().'home/updatequiz/'.$row['id_quiz'].'" class="btn btn-warning">
+            <i class="icon icon-pencil"></i> Update</a>';
+            $button_update_delete .= '<a href="'.base_url().'home/deletequiz/'.$row['id_quiz'].'" class="btn btn-danger" onclick="return deleteData(this,\''.$row['id_quiz'].'\');">
+            <i class="icon icon-trash"></i> Delete</a></div>';
+            
+            $btn_show = '<button id="show_soal'.$row['id_quiz'].'" class="btn btn-warning" onclick="return viewSoal('.$row['id_quiz'].')">
+                 <i class="icon icon-pencil"></i> Show</button>';
+            
+            $this->table->add_row(
+                array('data'=>$row['id_quiz'], 'class'=>'center', 'style'=>'width:40px;'),
+                array('data'=>$btn_show, 'style'=>'width:72px;'),
+                array('data'=>$row['soal_quiz'], 'class'=>'center'),
+                array('data'=>$button_update_delete, 'style'=>'width:164px;')
+            );
+        }
+        $this->user_data['table'] = $this->table->generate();
+        
+        $this->load->view('quiz', $this->user_data);
     }
 
 }
