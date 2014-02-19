@@ -696,5 +696,31 @@ class Home extends CI_Controller{
         
         $this->load->view('quiz', $this->user_data);
     }
+    
+    public function createquiz() {
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+
+        $this->user_data['title'] = "Create Quiz - E-Learning Server";
+        $this->user_data['quiz'] = true;
+        $this->user_data['id'] = '';
+        $this->user_data['create'] = true;
+        $this->user_data['soal_quiz'] = (isset($data['soal_quiz'])) ? $data['soal_quiz'] : '';
+        $this->user_data['jawabans'] = (isset($data['jawabans'])) ? $data['jawabans'] : array('','','','');
+//        $this->user_data['isi_soal'] = (isset($data['isi_soal'])) ? $data['isi_soal'] : array('');
+
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+
+        $this->load->view('quiz', $this->user_data);
+    }
+    
+    public function updatequiz($id_quiz=NULL){
+        
+    }
+    
+    public function deletequiz($id_quiz=NULL) {
+        
+    }
 
 }

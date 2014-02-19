@@ -4,58 +4,45 @@
     <span class="emb_botleft"></span>
     <span class="emb_botright"></span>
     <span class="emb_footrpt"></span>
-    <h2><?php echo (isset($create))?'Create New Tugas':'Update Tugas'; ?></h2>
+    <h2><?php echo (isset($create))?'Create New Quiz':'Update Quiz'; ?></h2>
     <?php echo form_open('home/submittugas', array('class'=>'formfield')); ?>
     <input type="hidden" name="id" value="<?php echo $id; ?>"/>
     <input type="hidden" name="proses" value="<?php echo (isset($create))?'create':'update';?>"/>
     <fieldset>
-        <legend>Detail Tugas</legend>
+        <legend>Detail Quiz</legend>
         <table>
             <tr class="odd">
                 <td class="first">
-                    <label>Judul Tugas</label>
+                    <label>Soal Quiz</label>
                 </td>
                 <td>:</td>
                 <td class="last">
-                    <input type="text" name="judul_tugas" value="<?=$judul_tugas?>"/>
+                    <input type="text" name="soal_quiz" value="<?=$soal_quiz?>" style="width: 500px;"/>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <label>Catatan</label>
-                </td>
-                <td>:</td>
-                <td>
-                    <input type="text" name="catatan" style="width: 400px;" value="<?=$catatan?>"/>
-                </td>
-            </tr>
-            <tr class="odd">
                 <td style="vertical-align: top;">
-                    <label>Soal</label>
+                    <label>Pilihan Jawaban</label>
                 </td>
                 <td style="vertical-align: top;">:</td>
                 <td>
                     <table id="table_soal" class="my_table">
-                        <tr>
+                        <!--<tr>
                             <td>1.</td>
-                            <td><textarea name="isi_soal[]" rows="1" cols="3" ><?=$isi_soal[0]?></textarea><br/></td>
+                            <td><textarea name="jawaban[]" rows="1" cols="3" ><?//=$isi_soal[0]?></textarea><br/></td>
                             <td style="vertical-align: top;"><button type="button" class="btn btn-primary" onclick="return addTextAreaSoal();"><i class="icon icon-plus"></i></button></td>
-                        </tr>
-                        <?php $idx=0; foreach ($isi_soal as $soal) :
-                            if($idx==0){
-                                $idx++; continue;
-                            }?>
-                        <tr id="tr_soal<?=($idx+1)?>">
-                            <td class="no_soal"><?=($idx+1).'.'?></td>
-                            <td><textarea name="isi_soal[]" rows="1" cols="3" ><?=$soal?></textarea><br/></td>
-                            <td style="vertical-align: top;"><button type="button" id="btn_del<?=($idx+1)?>" class="btn btn-danger" onclick="return deleteTextAreaSoal(this.id)"><i class="icon icon-trash"></i></button></td>
-                        </tr>
-                        <?php $idx++; endforeach; ?>
-<!--                        <tr>
-                            <td>2.</td>
-                            <td><textarea name="isi_soal" rows="1" cols="3" ></textarea><br/></td>
-                            <td style="vertical-align: top;"><button class="btn btn-danger"><i class="icon icon-trash"></i></button></td>
                         </tr>-->
+                        <?php $chr=97; for ($i=0; $i<4; $i++) :
+//                            if($idx==0){
+//                                $idx++; continue;
+//                            }
+                            ?>
+                        <tr id="tr_soal<?=($i+1)?>">
+                            <td class="no_soal"><?=chr($chr).'.'?></td>
+                            <td><textarea name="jawaban[]" rows="1" cols="3" ><?=$jawabans[$i]?></textarea><br/></td>
+                            <td style="vertical-align: top;"><button type="button" id="btn_del<?=($i+1)?>" class="btn btn-danger" onclick="return deleteTextAreaSoal(this.id)"><i class="icon icon-trash"></i></button></td>
+                        </tr>
+                        <?php $chr++; endfor; ?>
                     </table>
                 </td>
             </tr>
