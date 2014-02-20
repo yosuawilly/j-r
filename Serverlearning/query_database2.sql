@@ -64,3 +64,11 @@ jawaban varchar(30),
 id_quiz int references quiz on update cascade on delete cascade,
 benar boolean
 );
+
+insert into table_version(nama_table, "version") values 
+('t_bab', 1),
+('t_materi', 1),
+('t_tugas', 1),
+('t_soal_tugas', 1),
+('t_quiz', 1),
+('t_jawaban_quiz', 1);
