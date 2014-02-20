@@ -1,3 +1,24 @@
+<script type="text/javascript">
+    function actionCheckBox(id){
+        if(id=='chk1'){
+            $("#chk2").prop('checked',false);
+            $("#chk3").prop('checked',false);
+            $("#chk4").prop('checked',false);
+        } else if(id=='chk2'){
+            $("#chk1").prop('checked',false);
+            $("#chk3").prop('checked',false);
+            $("#chk4").prop('checked',false);
+        } else if(id=='chk3'){
+            $("#chk1").prop('checked',false);
+            $("#chk2").prop('checked',false);
+            $("#chk4").prop('checked',false);
+        } else if(id=='chk4'){
+            $("#chk1").prop('checked',false);
+            $("#chk2").prop('checked',false);
+            $("#chk3").prop('checked',false);
+        }
+    }
+</script>
 <div id="main_content">
     <span class="emb_left"></span>
     <span class="emb_right"></span>
@@ -5,7 +26,7 @@
     <span class="emb_botright"></span>
     <span class="emb_footrpt"></span>
     <h2><?php echo (isset($create))?'Create New Quiz':'Update Quiz'; ?></h2>
-    <?php echo form_open('home/submittugas', array('class'=>'formfield')); ?>
+    <?php echo form_open('home/submitquiz', array('class'=>'formfield')); ?>
     <input type="hidden" name="id" value="<?php echo $id; ?>"/>
     <input type="hidden" name="proses" value="<?php echo (isset($create))?'create':'update';?>"/>
     <fieldset>
@@ -39,8 +60,10 @@
                             ?>
                         <tr id="tr_soal<?=($i+1)?>">
                             <td class="no_soal"><?=chr($chr).'.'?></td>
-                            <td><textarea name="jawaban[]" rows="1" cols="3" ><?=$jawabans[$i]?></textarea><br/></td>
-                            <td style="vertical-align: top;"><button type="button" id="btn_del<?=($i+1)?>" class="btn btn-danger" onclick="return deleteTextAreaSoal(this.id)"><i class="icon icon-trash"></i></button></td>
+                            <td><textarea name="jawabans[]" rows="1" cols="3" ><?=$jawabans[$i]?></textarea><br/></td>
+                            <td style="vertical-align: top;">
+                                <input type="checkbox" id="chk<?=($i+1)?>" name="benars[]" value="<?=($i+1)?>" onclick="return actionCheckBox(this.id);" <?=($benars[$i]=='t'?'checked':'')?>/>
+                            </td>
                         </tr>
                         <?php $chr++; endfor; ?>
                     </table>

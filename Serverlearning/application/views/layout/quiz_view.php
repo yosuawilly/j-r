@@ -84,7 +84,9 @@
         $jawabans = result.jawaban;
         for($i=0; $i<$jawabans.length; $i++){
             var $num = String.fromCharCode($idx)
-            $rowJawaban = "<tr><td>"+$num+".&nbsp</td><td>"+$jawabans[$i].jawaban+"</td></tr>"
+            $rowJawaban = "<tr><td>"+$num+".&nbsp</td><td>"+$jawabans[$i].jawaban
+            if($jawabans[$i].benar=='t') $rowJawaban += "<span>&nbsp(benar)</span>";
+            $rowJawaban += "</td></tr>";
             $('#t_soal').append($rowJawaban);
             $idx++;
         }

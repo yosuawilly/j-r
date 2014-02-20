@@ -708,7 +708,7 @@ class Home extends CI_Controller{
         $this->user_data['create'] = true;
         $this->user_data['soal_quiz'] = (isset($data['soal_quiz'])) ? $data['soal_quiz'] : '';
         $this->user_data['jawabans'] = (isset($data['jawabans'])) ? $data['jawabans'] : array('','','','');
-//        $this->user_data['isi_soal'] = (isset($data['isi_soal'])) ? $data['isi_soal'] : array('');
+        $this->user_data['benars'] = (isset($data['benars'])) ? $data['benars'] : array('f','f','f','f');
 
         $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
 
@@ -716,11 +716,111 @@ class Home extends CI_Controller{
     }
     
     public function updatequiz($id_quiz=NULL){
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_quiz==NULL) redirect ('home/quiz', 'refresh');
+
+        $row = $this->quiz_model->get_by_id($id_quiz);
+        $row_jawaban = $this->quiz_model->get_jawaban($id_quiz);
+        if(!$row || !$row_jawaban['num_rows']) redirect ('home/tugas', 'refresh');
+
+        $data = ($this->session->flashdata('data')) ? $this->session->flashdata('data') : array();
+        $isi_jawaban = array();
+        $benars = array();
+
+        $this->user_data['title'] = "Update Quiz - E-Learning Server";
+        $this->user_data['quiz'] = true;
+        $this->user_data['id'] = $id_quiz;
+        $this->user_data['update'] = true;
+        $this->user_data['soal_quiz'] = (isset($data['soal_quiz'])) ? $data['soal_quiz'] : $row->soal_quiz;
+        foreach ($row_jawaban['rows'] as $jawaban) {
+            $isi_jawaban[] = $jawaban['jawaban'];
+            $benars[] = $jawaban['benar'];
+        }
+        $this->user_data['jawabans'] = (isset($data['jawabans'])) ? $data['jawabans'] : $isi_jawaban;
+        $this->user_data['benars'] = (isset($data['benars'])) ? $data['benars'] : $benars;
         
+        $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
+
+        $this->load->view('quiz', $this->user_data);
     }
     
     public function deletequiz($id_quiz=NULL) {
-        
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($id_quiz==NULL) redirect ('home/quiz', 'refresh');
+
+        $result = $this->quiz_model->delete($id_quiz);
+        if($result) redirect ('home/quiz', 'refresh');
+    }
+    
+    public function submitquiz(){
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        if($this->input->post('batal')) redirect ('home/quiz', 'refresh');
+
+        $id = $this->input->post('id');
+        $proses = $this->input->post('proses');
+        $soal_quiz = $this->input->post('soal_quiz');
+        $jawabans = $this->input->post('jawabans');
+        $benars = $this->input->post('benars');
+
+        $data = array('soal_quiz'=>$soal_quiz, 'jawabans'=>$jawabans, 'benars'=>$benars);
+
+        switch ($proses) {
+            case 'create':
+                if(trim($soal_quiz)=='' || in_array('', $jawabans)){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createquiz', 'refresh');
+                } else if($benars==NULL) {
+                    $data['error'] = 'Pilih salah satu jawaban yang benar';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createquiz', 'refresh');
+                } else {
+                    $data_jawaban = array();
+                    $value_checked = 0;
+                    foreach ($benars as $benar) {
+                        $value_checked = $benar;
+                    }
+                    
+                    for($i=0; $i<4; $i++){
+                        $data_jawaban[] = array('jawaban'=>$jawabans[$i], 'benar'=>$value_checked==($i+1) ? '1':'0');
+                    }
+                    
+                    $result = $this->quiz_model->add(array('soal_quiz'=>$soal_quiz), $data_jawaban);
+                    if($result['result']) redirect ('home/quiz', 'refresh');
+                    else {
+                        $data['error'] = $result['error'];
+                        $this->session->set_flashdata('data', $data);
+                        redirect('home/createquiz', 'refresh');
+                    }
+                }
+                break;
+            case 'update':
+                if(trim($soal_quiz)=='' || in_array('', $jawabans)){
+                    $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatequiz/'.$id, 'refresh');
+                } else if($benars==NULL) {
+                    $data['error'] = 'Pilih salah satu jawaban yang benar';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatequiz/'.$id, 'refresh');
+                } else {
+                    $data_jawaban = array();
+                    $value_checked = 0;
+                    foreach ($benars as $benar) {
+                        $value_checked = $benar;
+                    }
+                    
+                    for($i=0; $i<4; $i++){
+                        $data_jawaban[] = array('jawaban'=>$jawabans[$i], 'benar'=>$value_checked==($i+1) ? '1':'0');
+                    }
+                    
+                    $sukses = $this->quiz_model->update($id, array('soal_quiz'=>$soal_quiz), $data_jawaban);
+                    if($sukses) redirect ('home/quiz', 'refresh');
+                }
+                break;
+            default:
+                break;
+        }
     }
 
 }
