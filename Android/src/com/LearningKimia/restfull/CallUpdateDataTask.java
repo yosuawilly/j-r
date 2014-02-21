@@ -193,6 +193,8 @@ public class CallUpdateDataTask extends AsyncTask<Object, String, String>{
 		if(table.equals("t_bab")) return "Bab";
 		else if(table.equals("t_materi")) return "Materi";
 		else if(table.equals("t_tugas")) return "Tugas";
+		else if(table.equals("t_quiz")) return "Quiz";
+		else if(table.equals("t_jawaban_quiz")) return "Jawaban Quiz";
 		else return "Soal Tugas";
 	}
 	

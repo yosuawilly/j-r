@@ -170,6 +170,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		.append(" (nama_table,versi) values (")
 		.append("'"+SOALTUGAS_TABLE+"'").append(",'0');");
 		
+		StringBuffer sql5 = new StringBuffer();
+		sql5.append("INSERT INTO ").append(VERSION_TABLE)
+		.append(" (nama_table,versi) values (")
+		.append("'"+QUIZ_TABLE+"'").append(",'0');");
+		
+		StringBuffer sql6 = new StringBuffer();
+		sql6.append("INSERT INTO ").append(VERSION_TABLE)
+		.append(" (nama_table,versi) values (")
+		.append("'"+J_QUIZ_TABLE+"'").append(",'0');");
+		
 //		.append("'"+BAB_TABLE+"'").append(",'0'),(")
 //		.append("'"+MATERI_TABLE+"'").append(",'0'),(")
 //		.append("'"+TUGAS_TABLE+"'").append(",'0'),(")
@@ -178,6 +188,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL(sql2.toString());
 		db.execSQL(sql3.toString());
 		db.execSQL(sql4.toString());
+		db.execSQL(sql5.toString());
+		db.execSQL(sql6.toString());
 		Log.i("create", "Version");
 	}
 	
@@ -262,6 +274,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 			initTableTugas(json);
 		} else if(namaTable.equals(SOALTUGAS_TABLE)){
 			initTableSoalTugas(json);
+		} else if(namaTable.equals(QUIZ_TABLE)){
+			initTableQuiz(json);
+		} else if(namaTable.equals(J_QUIZ_TABLE)){
+			initTableJawabanQuiz(json);
 		}
 	}
 	
@@ -413,6 +429,80 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 			}
 		}
 	}
+    
+    public void initTableQuiz(String json){
+    	database = this.getWritableDatabase();
+		StringBuffer sql;
+		String version = null;
+		boolean insertSukses = true;
+		try {
+			JSONObject jobj = new JSONObject(json);
+			version = jobj.getString("version");
+			JSONArray table = jobj.getJSONArray("table");
+			int len = table.length();
+			String strSQL = "DELETE FROM "+QUIZ_TABLE;
+			database.execSQL(strSQL);
+			for(int i=0;i<len;i++){
+				sql = new StringBuffer();
+				sql.append("INSERT INTO ").append(QUIZ_TABLE).append(" values ")
+				.append("('"+table.getJSONObject(i).getString("id_quiz")+"', ")
+				.append("'"+table.getJSONObject(i).getString("soal_quiz")+"');");
+				database.execSQL(sql.toString());
+			}
+		} catch (JSONException e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} catch (Exception e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} finally {
+			if(insertSukses){
+				sql = new StringBuffer();
+				sql.append("UPDATE ").append(VERSION_TABLE).append(" SET versi = '"+version+"' ")
+				.append("WHERE nama_table = '"+QUIZ_TABLE+"';");
+				database.execSQL(sql.toString());
+				Log.i("init table quiz", "sukses");
+			}
+		}
+    }
+    
+    public void initTableJawabanQuiz(String json){
+    	database = this.getWritableDatabase();
+		StringBuffer sql;
+		String version = null;
+		boolean insertSukses = true;
+		try {
+			JSONObject jobj = new JSONObject(json);
+			version = jobj.getString("version");
+			JSONArray table = jobj.getJSONArray("table");
+			int len = table.length();
+			String strSQL = "DELETE FROM "+J_QUIZ_TABLE;
+			database.execSQL(strSQL);
+			for(int i=0;i<len;i++){
+				sql = new StringBuffer();
+				sql.append("INSERT INTO ").append(J_QUIZ_TABLE).append(" values ")
+				.append("('"+table.getJSONObject(i).getString("id_jawaban")+"', ")
+				.append("'"+table.getJSONObject(i).getString("jawaban")+"', ")
+				.append("'"+table.getJSONObject(i).getString("id_quiz")+"', ")
+				.append(""+(table.getJSONObject(i).getString("benar").equals("t") ? 1:0)+");");
+				database.execSQL(sql.toString());
+			}
+		} catch (JSONException e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} catch (Exception e) {
+			insertSukses = false;
+			e.printStackTrace();
+		} finally {
+			if(insertSukses){
+				sql = new StringBuffer();
+				sql.append("UPDATE ").append(VERSION_TABLE).append(" SET versi = '"+version+"' ")
+				.append("WHERE nama_table = '"+J_QUIZ_TABLE+"';");
+				database.execSQL(sql.toString());
+				Log.i("init table jawaban quiz", "sukses");
+			}
+		}
+    }
     
     public List<Bab> getBabs(){
     	database = this.getWritableDatabase();
