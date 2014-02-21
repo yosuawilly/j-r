@@ -57,6 +57,18 @@ class Rest extends CI_Controller {
                 $result = array('version'=>$version->version, 'table'=>$soal_tugas['rows']);
                 echo json_encode($result);
                 break;
+            case 't_quiz':
+                $quizs = $this->quiz_model->get();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$quizs['rows']);
+                echo json_encode($result);
+                break;
+            case 't_jawaban_quiz':
+                $jawaban_quiz = $this->quiz_model->get_all_jawaban();
+                $version = $this->version_model->get_by_nama_table($table);
+                $result = array('version'=>$version->version, 'table'=>$jawaban_quiz['rows']);
+                echo json_encode($result);
+                break;
             default:
                 $result = array('status'=>'0','fullMessage'=>'Table tidak ditemukan');
                 echo json_encode($result);

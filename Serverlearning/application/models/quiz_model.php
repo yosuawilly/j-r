@@ -128,4 +128,18 @@ class Quiz_model extends CI_Model{
         return $result;
     }
     
+    public function get_all_jawaban() {
+        $result = array();
+        $strSQL = 'select * from '.$this->table_jawaban_quiz;
+        $query = $this->db->query($strSQL);
+        if($query){
+            $result['num_rows'] = $query->num_rows();
+            $result['rows'] = $query->result_array();
+        } else {
+            $result['num_rows'] = 0;
+            $result['rows'] = array();
+        }
+        return $result;
+    }
+    
 }

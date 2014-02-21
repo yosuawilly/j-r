@@ -1,3 +1,55 @@
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        bkLib.onDomLoaded(function() {
+            new nicEditor({uploadURI:"<?php echo base_url().'rest/upload';?>",iconsPath: "<?php echo base_url().'css/images/nicEditorIcons.gif';?>"}).panelInstance('isi_materi');
+        });
+        showHideRowLink();
+        $('#btn-add-link').click(function(){
+            addLink();
+        });
+    });
+    
+    var $countLink = 0;
+    
+    function showHideRowLink(){
+        if($('#table_link').find('tr').length == 0){
+            $('#row_link').hide();
+        } else $('#row_link').show(200, function(){});
+    }
+    
+    function addLink(){
+        $countLink++;
+        $textLink = "<tr id=\"tr-link\">"+
+                            "<td class=\"no-row\">"+$countLink+".</td>"+
+                            "<td><input name=\"link[]\" type=\"text\" /><br/></td>"+
+                            "<td style=\"vertical-align: top;\"><button type=\"button\" class=\"btn btn-danger\" onclick=\"return deleteTextLink(this);\">"+
+                            "<i class=\"icon icon-trash\"></i></button></td>"+
+                        "</tr>";
+        $($textLink).appendTo($('#table_link')).hide().show(200, function(){});
+//        $('#table_link').append($textLink);
+        showHideRowLink();
+        return false;
+    }
+    
+    function deleteTextLink(td){
+        $(td).parents('#tr-link').hide(200, function(){
+            $countLink--;
+            $(td).parents('#tr-link').remove();
+            $('.no-row').each(function(i, td){
+                $(td).html(i+1+'.');
+            });
+            showHideRowLink();
+        });
+        
+//        $countLink--;
+//        $(td).parents('#tr-link').remove();
+//        $('.no-row').each(function(i, td){
+//            $(td).html(i+1+'.');
+//        });
+//        showHideRowLink();
+        return false;
+    }
+</script>
 <div id="main_content">
     <span class="emb_left"></span>
     <span class="emb_right"></span>
@@ -56,6 +108,21 @@
                     </select>
                 </td>
             </tr>
+            <tr id="row_link" class="odd" style="display: none;">
+                <td style="vertical-align: top;">
+                    <label>Link Materi Video</label>
+                </td>
+                <td style="vertical-align: top;">:</td>
+                <td>
+                    <table id="table_link" class="my_table">
+<!--                        <tr>
+                            <td>1.</td>
+                            <td><input name="link[]" type="text" /><br/></td>
+                            <td style="vertical-align: top;"><button type="button" class="btn btn-danger" onclick="return deleteTextLink();"><i class="icon icon-trash"></i></button></td>
+                        </tr>-->
+                    </table>
+                </td>
+            </tr>
         </table><br/>
         <?php if($error!=null) {?>
         <div id="pesanerror" style="width: 100%;"><?php echo ''.$error; ?></div><br/>
@@ -66,12 +133,8 @@
         <button type="submit" name="batal" value="batal" class="btn btn-danger">
             <i class="icon icon-stop"></i> Batal
         </button>
+        <button id="btn-add-link" type="button" name="addLink" value="tambah_link_video" class="btn btn-primary" >
+            <i class="icon icon-plus"></i> Tambah Link Video
+        </button>
     </fieldset>
 </div>
-<script type="text/javascript">
-    jQuery(document).ready(function () {
-        bkLib.onDomLoaded(function() {
-            new nicEditor({uploadURI:"<?php echo base_url().'rest/upload';?>",iconsPath: "<?php echo base_url().'css/images/nicEditorIcons.gif';?>"}).panelInstance('isi_materi');
-        });
-    });
-</script>
