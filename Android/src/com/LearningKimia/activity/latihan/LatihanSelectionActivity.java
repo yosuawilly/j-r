@@ -23,6 +23,8 @@ import com.LearningKimia.model.Quiz;
 import com.LearningKimia.model.SoalPeriodik;
 import com.LearningKimia.util.Constant;
 import com.LearningKimia.util.MyLCG;
+import com.LearningKimia.util.ResourceUtil;
+import com.LearningKimia.util.Utility;
 
 public class LatihanSelectionActivity extends BaseMyActivity{
 	LinearLayout btnLatihan, btnPeriodik, btnScore;
@@ -96,6 +98,10 @@ public class LatihanSelectionActivity extends BaseMyActivity{
 				} else 
 				acakQuiz.add(quizs.get(acak[i]));
 			}
+			if(acakQuiz.size()==0){
+				Utility.showMessage(this, "Tutup", ResourceUtil.getBundle().getString("LK-0003"));
+				return;
+			}
 			intent = new Intent(this, LatihanActivity.class);
 			intent.putParcelableArrayListExtra("acak_quiz", (ArrayList<? extends Parcelable>) acakQuiz);
 			startActivity(intent);
@@ -160,6 +166,10 @@ public class LatihanSelectionActivity extends BaseMyActivity{
 		@Override
 		protected void onPostExecute(List<SoalPeriodik> soalPeriodiks) {
 			if(dialog!=null) dialog.dismiss();
+			if(soalPeriodiks.size()==0){
+				Utility.showMessage(LatihanSelectionActivity.this, "Tutup", ResourceUtil.getBundle().getString("LK-0003"));
+				return;
+			}
 			Intent intent = new Intent(LatihanSelectionActivity.this, LatihanPeriodikActivity.class);
 			intent.putParcelableArrayListExtra("soal_periodik", (ArrayList<? extends Parcelable>) soalPeriodiks);
 			startActivity(intent);

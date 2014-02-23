@@ -17,6 +17,7 @@ public class ResourceUtil {
 					String [][] arr  = new String[][] {
 							{"LK-0000","Problem komunikasi dengan server"},
 							{"LK-0002","Tidak ada data"},
+							{"LK-0003","Tidak ada data quiz"},
 							{"IB-0600","Problem komunikasi dengan server"}
 						};
 					return arr;
