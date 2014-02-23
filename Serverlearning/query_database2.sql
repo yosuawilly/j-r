@@ -55,12 +55,12 @@ tgl_upload date not null
 
 create table quiz(
 id_quiz serial not null primary key,
-soal_quiz varchar(30)
+soal_quiz text
 );
 
 create table jawaban_quiz(
 id_jawaban serial not null primary key,
-jawaban varchar(30),
+jawaban text,
 id_quiz int references quiz on update cascade on delete cascade,
 benar boolean
 );

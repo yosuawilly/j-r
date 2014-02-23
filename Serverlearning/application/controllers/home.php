@@ -784,6 +784,11 @@ class Home extends CI_Controller{
                     for($i=0; $i<4; $i++){
                         $data_jawaban[] = array('jawaban'=>$jawabans[$i], 'benar'=>$value_checked==($i+1) ? '1':'0');
                     }
+                    $benars = array();
+                    foreach ($data_jawaban as $jawab) {
+                        $benars[] = ($jawab['benar']=='1') ? 't':'f';
+                    }
+                    $data['benars'] = $benars;
                     
                     $result = $this->quiz_model->add(array('soal_quiz'=>$soal_quiz), $data_jawaban);
                     if($result['result']) redirect ('home/quiz', 'refresh');
