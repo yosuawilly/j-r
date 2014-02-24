@@ -8,6 +8,7 @@ public final class Constant {
 	public static final String DOWNLOAD_URL = "http://192.168.16.90/Serverlearning/materi/";
 	public static final String UPLOAD_TUGAS_URL = BASE_URL + "uploadTugas/";
 	public static final String GET_TABLE_VERSION_URL = BASE_URL + "getTableVersion";
+	public static final String GET_LINK_VIDEO_URL = BASE_URL + "getLinkVideo/";
 	public static final String DB_NAME="LearningKimiaDB";
 	public static final String DB_PATH="/data/data/com.LearningKimia/databases/";
 	public static final String MATERI_PATH="/data/data/com.LearningKimia/materi/";

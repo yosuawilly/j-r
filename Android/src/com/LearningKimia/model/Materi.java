@@ -1,13 +1,20 @@
 package com.LearningKimia.model;
 
-public class Materi {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Materi implements Serializable{
+	
+	private static final long serialVersionUID = -1308190582814888392L;
 	
 	private String id_materi;
 	private String judul;
 	private String id_bab;
 	private String semester;
 	private String url;
-	
+	private List<LinkVideo> linkVideos = new ArrayList<LinkVideo>();
+
 	public Materi() {
 		// TODO Auto-generated constructor stub
 	}
@@ -50,6 +57,14 @@ public class Materi {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public List<LinkVideo> getLinkVideos() {
+		return linkVideos;
+	}
+
+	public void setLinkVideos(List<LinkVideo> linkVideos) {
+		this.linkVideos = linkVideos;
 	}
 
 }
