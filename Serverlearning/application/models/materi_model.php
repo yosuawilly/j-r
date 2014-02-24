@@ -36,24 +36,113 @@ class Materi_model extends CI_Model{
         $query = $this->db->query($strSQL, $id_materi);
         return ($query->num_rows() > 0) ? $query->row() : false;
     }
+    
+    public function get_link_video($id_materi, $allData=FALSE) {
+        $strSQL = 'select * from materi_link_video where id_materi = ?';
+        $query = $this->db->query($strSQL, $id_materi);
+        $link_videos = $query->result_object();
+        
+        if($allData) return $link_videos;
+        
+        $link_video = array();
+        foreach ($link_videos as $link) {
+            $link_video[] = $link->link_video;
+        }
+        
+        return $link_video;
+    }
 
     public function add($data) {
         $result = array();
-        $this->db->insert($this->table, $data);
-        if($this->db->_error_message()){
+        
+        if(isset($data['link_video'])){
+            $link_video = $data['link_video'];
+            unset($data['link_video']);
+        } else $link_video = array();
+        
+        $this->db->trans_begin(); //begin transaksi
+        
+        if(!$this->db->insert($this->table, $data)){
+            $this->db->trans_rollback();
+            $result['error'] = 'Error insert materi';
+            $result['result'] = false;
+            return $result;
+        }
+        
+        $id = $this->db->insert_id(); //get inserted id_materi
+        
+        foreach ($link_video as $link) {
+            $strSQL = 'insert into materi_link_video(id_materi,link_video) values (? , ?)';
+            $query = $this->db->query($strSQL, array($id, $link));
+            
+            if(!$query) {
+                $this->db->trans_rollback();
+                $result['error'] = 'Error insert link';
+                $result['result'] = false;
+                return $result;
+            }
+        }
+        
+        if ($this->db->trans_status() === TRUE) {
+            $this->db->trans_commit();
+            $result['error'] = '';
+            $result['result'] = true;
+        } else {
+            $this->db->trans_rollback();
             $result['error'] = $this->db->_error_message();
             $result['result'] = false;
-        } else {
-            $result['error'] = '';
-            $result['result'] = $this->db->insert_id();
         }
+        
+//        if($this->db->_error_message()){
+//            $result['error'] = $this->db->_error_message();
+//            $result['result'] = false;
+//        } else {
+//            $result['error'] = '';
+//            $result['result'] = $this->db->insert_id();
+//        }
         return $result;
     }
     
     public function update($id_materi, $data) {
-        $this->db->where($this->id_materi, $id_materi);
-        $this->db->update($this->table, $data);
-        return $this->db->affected_rows();
+        $result = false;
+        
+        if(isset($data['link_video'])){
+            $link_video = $data['link_video'];
+            unset($data['link_video']);
+        } else $link_video = array();
+        
+        $this->db->trans_begin(); //begin transaksi
+        
+        if(!$this->db->update($this->table, $data, array($this->id_materi => $id_materi))){
+            $this->db->trans_rollback();
+            return $result;
+        }
+        
+        $strSQL = 'delete from materi_link_video where id_materi = ?';
+        $query = $this->db->query($strSQL, $id_materi);
+        if(!$query){
+            $this->db->trans_rollback();
+            return $result;
+        }
+        
+        foreach ($link_video as $link) {
+            $strSQL = 'insert into materi_link_video(id_materi,link_video) values (? , ?)';
+            $query = $this->db->query($strSQL, array($id_materi, $link));
+            
+            if(!$query) {
+                $this->db->trans_rollback();
+                return $result;
+            }
+        }
+        
+        if ($this->db->trans_status() === TRUE) {
+            $this->db->trans_commit();
+            $result = true;
+        } else $this->db->trans_rollback();
+        
+//        $this->db->where($this->id_materi, $id_materi);
+//        $this->db->update($this->table, $data);
+        return $result;
     }
     
     public function delete($id_materi) {

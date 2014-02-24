@@ -188,5 +188,10 @@ class Rest extends CI_Controller {
         $result = $this->version_model->get();
         echo json_encode($result);
     }
+    
+    public function getLinkVideo($id_materi) {
+        $result = $this->materi_model->get_link_video($id_materi, TRUE);
+        echo json_encode(array('linkVideos'=>$result));
+    }
 
 }

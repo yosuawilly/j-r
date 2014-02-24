@@ -65,6 +65,11 @@ id_quiz int references quiz on update cascade on delete cascade,
 benar boolean
 );
 
+create table materi_link_video(
+id_materi int references materi on update cascade on delete cascade,
+link_video text
+);
+
 insert into table_version(nama_table, "version") values 
 ('t_bab', 1),
 ('t_materi', 1),

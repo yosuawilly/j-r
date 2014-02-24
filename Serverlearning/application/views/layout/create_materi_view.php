@@ -3,13 +3,13 @@
         bkLib.onDomLoaded(function() {
             new nicEditor({uploadURI:"<?php echo base_url().'rest/upload';?>",iconsPath: "<?php echo base_url().'css/images/nicEditorIcons.gif';?>"}).panelInstance('isi_materi');
         });
-        showHideRowLink();
+        //showHideRowLink();
         $('#btn-add-link').click(function(){
             addLink();
         });
     });
     
-    var $countLink = 0;
+    var $countLink = <?=count($link_video)?>;
     
     function showHideRowLink(){
         if($('#table_link').find('tr').length == 0){
@@ -108,18 +108,23 @@
                     </select>
                 </td>
             </tr>
-            <tr id="row_link" class="odd" style="display: none;">
+            <tr id="row_link" class="odd" style="<?=(count($link_video)>0 ? '':'display: none;')?>">
                 <td style="vertical-align: top;">
                     <label>Link Materi Video</label>
                 </td>
                 <td style="vertical-align: top;">:</td>
                 <td>
                     <table id="table_link" class="my_table">
-<!--                        <tr>
-                            <td>1.</td>
-                            <td><input name="link[]" type="text" /><br/></td>
-                            <td style="vertical-align: top;"><button type="button" class="btn btn-danger" onclick="return deleteTextLink();"><i class="icon icon-trash"></i></button></td>
-                        </tr>-->
+                        <?php $countLink = 0;
+                            foreach ($link_video as $link) :
+                               $countLink++;
+                        ?>
+                        <tr id="tr-link">
+                            <td class="no-row"><?=$countLink?>.</td>
+                            <td><input name="link[]" type="text" value="<?=$link?>" /><br/></td>
+                            <td style="vertical-align: top;"><button type="button" class="btn btn-danger" onclick="return deleteTextLink(this);"><i class="icon icon-trash"></i></button></td>
+                        </tr>
+                        <?php endforeach; ?>
                     </table>
                 </td>
             </tr>

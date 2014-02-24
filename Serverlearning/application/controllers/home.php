@@ -264,6 +264,7 @@ class Home extends CI_Controller{
         $this->user_data['isi_materi'] = (isset($data['isi_materi'])) ? $data['isi_materi'] : '';
         $this->user_data['id_bab'] = (isset($data['id_bab'])) ? $data['id_bab'] : '';
         $this->user_data['semester'] = (isset($data['semester'])) ? $data['semester'] : '';
+        $this->user_data['link_video'] = (isset($data['link_video'])) ? $data['link_video'] : array();
         
         $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
         
@@ -275,6 +276,7 @@ class Home extends CI_Controller{
         if($id_materi==NULL) redirect ('home/materi', 'refresh');
 
         $row = $this->materi_model->get_by_id($id_materi);
+        $links = $this->materi_model->get_link_video($id_materi);
         if(!$row) redirect ('home/materi', 'refresh');
 
         $data_bab = $this->bab_model->get();
@@ -291,6 +293,8 @@ class Home extends CI_Controller{
         $this->user_data['isi_materi'] = (isset($data['isi_materi'])) ? $data['isi_materi'] : $row->isi_materi;
         $this->user_data['id_bab'] = (isset($data['id_bab'])) ? $data['id_bab'] : $row->id_bab;
         $this->user_data['semester'] = (isset($data['semester'])) ? $data['semester'] : $row->semester;
+        $this->user_data['link_video'] = (isset($data['link_video'])) ? $data['link_video'] : $links;
+        
         $this->user_data['error'] = (isset($data['error'])) ? $data['error'] : '';
 
         $this->load->view('materi', $this->user_data);
@@ -310,6 +314,8 @@ class Home extends CI_Controller{
     public function submitmateri() {
         if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
         if($this->input->post('batal')) redirect ('home/materi', 'refresh');
+        
+        $this->load->library('My_Util');
 
         $id = $this->input->post('id');
         $proses = $this->input->post('proses');
@@ -317,15 +323,20 @@ class Home extends CI_Controller{
         $isi_materi = $this->input->post('isi_materi');
         $id_bab = $this->input->post('id_bab');
         $semester = $this->input->post('semester');
+        $link_video = $this->input->post('link') ? $this->input->post('link') : array();
 
         $data = array('judul'=>$judul, 'isi_materi'=>$isi_materi, 'id_bab'=>$id_bab,
-                      'semester'=>$semester);
+                      'semester'=>$semester, 'link_video'=>$link_video);
 
         switch ($proses) {
             case 'create':
                 if(trim($judul)=='' || trim($isi_materi)=='' || trim($id_bab)==''
                         || trim($semester)==''){
                     $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/createmateri', 'refresh');
+                } else if(!My_Util::isArrayDifferent($link_video)){
+                    $data['error'] = 'Link video tidak boleh sama';
                     $this->session->set_flashdata('data', $data);
                     redirect('home/createmateri', 'refresh');
                 } else {
@@ -353,6 +364,10 @@ class Home extends CI_Controller{
                 if(trim($judul)=='' || trim($isi_materi)=='' || trim($id_bab)==''
                         || trim($semester)==''){
                     $data['error'] = 'All field required';
+                    $this->session->set_flashdata('data', $data);
+                    redirect('home/updatemateri/'.$id, 'refresh');
+                } else if(!My_Util::isArrayDifferent($link_video)){
+                    $data['error'] = 'Link video tidak boleh sama';
                     $this->session->set_flashdata('data', $data);
                     redirect('home/updatemateri/'.$id, 'refresh');
                 } else {
