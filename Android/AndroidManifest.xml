@@ -107,6 +107,9 @@
         <activity android:name="com.LearningKimia.activity.materi.MateriVideoViewActivity"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
+        <activity android:name=".activity.tugas.TugasShowNilaiActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,8 @@
 package com.LearningKimia.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Siswa {
 	
 	private String idSiswa;
@@ -8,6 +11,7 @@ public class Siswa {
 	private String nama;
 	private String jenisKelamin;
 	private String alamat;
+	private List<NilaiTugas> nilaiTugas = new ArrayList<NilaiTugas>();
 	
 	public Siswa() {
 		// TODO Auto-generated constructor stub
@@ -59,6 +63,14 @@ public class Siswa {
 
 	public void setAlamat(String alamat) {
 		this.alamat = alamat;
+	}
+
+	public List<NilaiTugas> getNilaiTugas() {
+		return nilaiTugas;
+	}
+
+	public void setNilaiTugas(List<NilaiTugas> nilaiTugas) {
+		this.nilaiTugas = nilaiTugas;
 	}
 
 }
