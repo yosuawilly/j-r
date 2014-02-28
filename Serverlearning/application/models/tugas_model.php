@@ -127,6 +127,21 @@ class Tugas_model extends CI_Model{
         }
         return $result;
     }
+    
+    public function get_with_query($q, $param=NULL) {
+        $result = array();
+        $strSQL = $q;
+        if($param==NULL) $query = $this->db->query($strSQL);
+        else $query = $this->db->query($strSQL, $param);
+        if($query){
+            $result['num_rows'] = $query->num_rows();
+            $result['rows'] = $query->result_array();
+        } else {
+            $result['num_rows'] = 0;
+            $result['rows'] = array();
+        }
+        return $result;
+    }
 
     public function get_by_id($id_tugas) {
         $this->db->where($this->id_tugas, $id_tugas);
@@ -146,6 +161,37 @@ class Tugas_model extends CI_Model{
         } else {
             $result['num_rows'] = 0;
             $result['rows'] = array();
+        }
+        return $result;
+    }
+    
+    public function get_nilai_tugas_by_siswa($id_siswa){
+        $strSQL = 'select d.*,nt.nilai from (
+select s.id_siswa,t.id_tugas,t.judul_tugas 
+from siswa s,tugas t where id_siswa= ? 
+) d left join nilai_tugas nt on d.id_siswa=nt.id_siswa and d.id_tugas=nt.id_tugas';
+        
+        return $this->get_with_query($strSQL, $id_siswa);
+    }
+    
+    public function get_nilai_tugas_by_siswa2($id_siswa) {
+        $strSQL = 'select d.id_siswa,d.judul_tugas,coalesce(nt.nilai, 0) as nilai from (
+select s.id_siswa,t.id_tugas,t.judul_tugas 
+from siswa s,tugas t where id_siswa= ? 
+) d left join nilai_tugas nt on d.id_siswa=nt.id_siswa and d.id_tugas=nt.id_tugas';
+        
+        return $this->get_with_query($strSQL, $id_siswa);
+    }
+    
+    public function save_nilai($id_siswa, $id_tugas, $nilai){
+        $strSQL = 'select * from nilai_tugas where id_siswa = ? and id_tugas = ?';
+        $query = $this->db->query($strSQL, array($id_siswa,$id_tugas));
+        if($query->num_rows() > 0){
+            $strSQL = 'update nilai_tugas set nilai = ? where id_siswa = ? and id_tugas = ?';
+            $result = $this->db->query($strSQL, array($nilai,$id_siswa,$id_tugas));
+        } else {
+            $strSQL = 'insert into nilai_tugas values ( ? , ? , ? )';
+            $result = $this->db->query($strSQL, array($id_siswa,$id_tugas,$nilai));
         }
         return $result;
     }

@@ -193,5 +193,126 @@ class Rest extends CI_Controller {
         $result = $this->materi_model->get_link_video($id_materi, TRUE);
         echo json_encode(array('linkVideos'=>$result));
     }
+    
+    public function getDataSiswa(){
+        $page = $_GET['page']; // get the requested page
+        $limit = $_GET['rows']; // get how many rows we want to have into the grid
+        $sidx = $_GET['sidx']; // get index row - i.e. user click to sort
+        $sord = $_GET['sord']; // get the direction
+        if(!$sidx) $sidx =1;
+
+        // connect to the database
+//        $db = mysql_connect($dbhost, $dbuser, $dbpassword)
+//        or die("Connection Error: " . mysql_error());
+//
+//        mysql_select_db($database) or die("Error conecting to db.");
+//        $result = mysql_query("SELECT COUNT(*) AS count FROM invheader a, clients b WHERE a.client_id=b.client_id");
+//        $row = mysql_fetch_array($result,MYSQL_ASSOC);
+        $result = $this->siswa_model->get();
+        $count = count($result['rows']);
+        if( $count > 0 ) {
+                $total_pages = ceil($count/$limit);
+        } else {
+                $total_pages = 0;
+        }
+        if ($page > $total_pages) $page=$total_pages;
+        $start = $limit*$page - $limit; // do not put $limit*($page - 1)
+        if ($start < 0) $start = 0;
+//        $SQL = "SELECT a.id, a.invdate, b.name, a.amount,a.tax,a.total,a.note FROM invheader a, clients b WHERE a.client_id=b.client_id ORDER BY $sidx $sord LIMIT $start , $limit";
+//        $result = mysql_query( $SQL ) or die("Couldnt execute query.".mysql_error());
+
+        if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) {
+        header("Content-type: application/xhtml+xml;charset=utf-8"); } else {
+        header("Content-type: text/xml;charset=utf-8");
+        }
+        $et = ">";
+        echo "<?xml version='1.0' encoding='utf-8'?$et\n";
+
+        echo "<rows>";
+        echo "<page>".$page."</page>";
+        echo "<total>".$total_pages."</total>";
+        echo "<records>".$count."</records>";
+        // be sure to put text data in CDATA
+        foreach ($result['rows'] as $row) {
+                echo "<row id='". $row['id_siswa']."'>";			
+                echo "<cell>". $row['id_siswa']."</cell>";
+                echo "<cell>". $row['nama']."</cell>";
+                //echo "<cell><![CDATA[". $row[name]."]]></cell>";
+                echo "<cell>". $row['jenis_kelamin']."</cell>";
+                echo "<cell>". $row['alamat']."</cell>";
+//                echo "<cell>". $row[total]."</cell>";
+//                echo "<cell><![CDATA[". $row[note]."]]></cell>";
+                echo "</row>";
+        }
+        echo "</rows>";
+    }
+    
+    public function getDataTugas() {
+        $examp = $_GET["q"]; //query number
+
+        $id = $_GET['id'];
+
+        // connect to the database
+//        $db = mysql_connect($dbhost, $dbuser, $dbpassword)
+//        or die("Connection Error: " . mysql_error());
+
+//        mysql_select_db($database) or die("Error conecting to db.");
+//        $SQL = "SELECT num, item, qty, unit FROM invlines WHERE id=".$id." ORDER BY item";
+//        $result = mysql_query( $SQL ) or die("Couldnt execute query.".mysql_error());
+        
+        $result = $this->tugas_model->get_nilai_tugas_by_siswa($id);
+
+        if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) {
+        header("Content-type: application/xhtml+xml;charset=utf-8"); } else {
+        header("Content-type: text/xml;charset=utf-8");
+        }
+        $et = ">";
+        echo "<?xml version='1.0' encoding='utf-8'?$et\n";
+        echo "<rows>";
+        // be sure to put text data in CDATA
+        foreach ($result['rows'] as $row) {
+                echo "<row>";			
+                echo "<cell>". $row['id_tugas']."</cell>";
+//                echo "<cell><![CDATA[". $row[item]."]]></cell>";
+                echo "<cell>". $row['judul_tugas']."</cell>";
+                echo "<cell>". ($row['nilai']==''?'0':$row['nilai'])."</cell>";
+//                echo "<cell>". number_format($row[qty]*$row[unit],2,'.',' ')."</cell>";
+                echo "</row>";
+        }
+        echo "</rows>";
+    }
+    
+    public function submitEditTugas() {
+        $nilai = $this->input->post('nilai');
+        $oper = $this->input->post('oper'); // operation
+        $id = $this->input->post('id');
+        
+        $id_siswa = $this->input->get('id_siswa');
+        $id_tugas = $this->input->get('id_tugas');
+        
+        $this->tugas_model->save_nilai($id_siswa, $id_tugas, $nilai);
+        
+//        $dom = new DOMDocument("1.0", "UTF-8");
+//        $soals = $dom->createElement('soals');
+//        $posts = '';
+//        $gets = '';
+//        foreach ($_POST as $key => $post) {
+//            $posts .= $key.'='.$post.' ';
+//        }
+//        foreach ($_GET as $key => $get) {
+//            $gets .= $key.'='.$get.' ';
+//        }
+//        $soals->setAttribute('postData', 'post : '.$posts .' get : '.$gets);
+//        $soals->setAttribute('postData', $nilai.$oper.$id.$id_siswa.$id_tugas);
+//        $dom->appendChild($soals);
+//        $dom->save('materi/post.xml');
+    }
+    
+    public function getNilaiTugas($id_siswa) {
+        $result = $this->tugas_model->get_nilai_tugas_by_siswa2($id_siswa);
+        
+        $nilaiTugas = array('nilaiTugas'=>$result['rows']);
+        echo json_encode($nilaiTugas);
+    }
 
 }

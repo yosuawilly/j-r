@@ -70,6 +70,12 @@ id_materi int references materi on update cascade on delete cascade,
 link_video text
 );
 
+create table nilai_tugas(
+id_siswa varchar(10) references siswa on update cascade on delete cascade,
+id_tugas int references tugas on update cascade on delete cascade,
+nilai int default 0
+);
+
 insert into table_version(nama_table, "version") values 
 ('t_bab', 1),
 ('t_materi', 1),

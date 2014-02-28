@@ -46,6 +46,12 @@
                                     <li><?php echo anchor('home/quiz', 'Data Quiz', array('title'=>'Data Quiz', 'class'=>(isset($quiz)) ? 'active' : "" )); ?></li>
                                 </ul>
                             </div>
+                            <h3>Input Data<span class="arrowclose"></span></h3>
+                            <div class="panel">
+                                <ul>
+                                    <li><?php echo anchor('home/inputNilaiTugas', 'Input Nilai Tugas', array('title'=>'Input Nilai Tugas', 'class'=>(isset($inputNilai)) ? 'active' : "" )); ?></li>
+                                </ul>
+                            </div>
                             <h3>Admin<span class="arrowclose"></span></h3>
                             <div class="panel">
                                 <ul>

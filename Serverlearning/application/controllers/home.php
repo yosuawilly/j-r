@@ -842,5 +842,14 @@ class Home extends CI_Controller{
                 break;
         }
     }
+    
+    public function inputNilaiTugas(){
+        if(!$this->my_auth->logged_in()) redirect ('auth/login', 'refresh');
+        
+        $this->user_data['title'] = "Input Nilai Tugas - E-Learning Server";
+        $this->user_data['inputNilai'] = true;
+        
+        $this->load->view('inputNilai', $this->user_data);
+    }
 
 }
